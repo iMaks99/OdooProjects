@@ -40,7 +40,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:importantForAutofill="yes"
-        android:text="5432"/>
+        android:text="5432"
+        android:inputType="numberDecimal"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -64,7 +65,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:importantForAutofill="yes"
-        android:text="openpgpwd"/>
+        android:text="openpgpwd"
+        android:inputType="textPassword"/>
 
     <Button
         android:id="@+id/connect_to_db"
