@@ -1,9 +1,11 @@
 package com.example.maks.odooprojects;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.maks.odooprojects.models.ProjectProject;
@@ -36,11 +38,19 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         );
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ProjectProject project = projectList.get(position);
 
         holder.projectName.setText(project.getName());
+        holder.projectCustomers.setText(project.getPartner());
+        holder.projectTasksNumber.setText(String.format("%d Tasks", project.getTasksCount()));
+
+        if(project.getFavourite())
+            holder.isFavouriteProject.setImageResource(R.drawable.ic_star_filled);
+        else
+            holder.isFavouriteProject.setImageResource(R.drawable.ic_star_border);
     }
 
     @Override
@@ -49,12 +59,19 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder{
+
         TextView projectName;
+        TextView projectCustomers;
+        TextView projectTasksNumber;
+        ImageView isFavouriteProject;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            projectName = itemView.findViewById(R.id.project_name_tw);
+            projectName = itemView.findViewById(R.id.project_name_tv);
+            projectCustomers = itemView.findViewById(R.id.project_customers_tv);
+            projectTasksNumber = itemView.findViewById(R.id.project_number_tasks_tv);
+            isFavouriteProject = itemView.findViewById(R.id.project_add_to_favourites_iv);
         }
     }
 }

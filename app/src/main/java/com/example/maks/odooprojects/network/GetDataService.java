@@ -13,7 +13,7 @@ import retrofit2.http.POST;
 
 public interface GetDataService {
 
-    @GET("getProjectsAll/")
+    @GET("getprojectsall/")
     Call<List<ProjectProject>> getAllProjects(
             @Header("Authorization") String token,
             @Header("dbname") String dbname
