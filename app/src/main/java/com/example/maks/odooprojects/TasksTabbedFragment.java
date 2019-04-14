@@ -119,8 +119,10 @@ public class TasksTabbedFragment extends Fragment
 
                 TasksTabbedAdapter adapter = new TasksTabbedAdapter(getChildFragmentManager());
 
-                for(ProjectTaskType type : projectTaskTypes)
-                    adapter.addFragment(new TasksRecyclerViewFragment(), type.getName());
+                for(ProjectTaskType type : projectTaskTypes) {
+                    TasksRecyclerViewFragment tasksRecyclerViewFragment = TasksRecyclerViewFragment.newInstance(type.getId());
+                    adapter.addFragment(tasksRecyclerViewFragment, type.getName());
+                }
 
                 viewPager.setAdapter(adapter);
                 tabLayout.setupWithViewPager(viewPager);

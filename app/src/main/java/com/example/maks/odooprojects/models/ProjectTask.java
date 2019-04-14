@@ -19,8 +19,10 @@ public class ProjectTask {
     private String kanbanState;
     @SerializedName("mail_activity_state")
     private int mailActivityState;
+    @SerializedName("stage_id")
+    private int stageId;
 
-    public ProjectTask(int id, String name, Date deadline, String emailFrom, boolean isPriority, String kanbanState, int mailActivityState) {
+    public ProjectTask(int id, String name, Date deadline, String emailFrom, boolean isPriority, String kanbanState, int mailActivityState, int stageId) {
         this.id = id;
         this.name = name;
         this.deadline = deadline;
@@ -28,6 +30,7 @@ public class ProjectTask {
         this.isPriority = isPriority;
         this.kanbanState = kanbanState;
         this.mailActivityState = mailActivityState;
+        this.stageId = stageId;
     }
 
 
@@ -57,6 +60,10 @@ public class ProjectTask {
 
     public int getMailActivityState() {
         return mailActivityState;
+    }
+
+    public int getStageId() {
+        return stageId;
     }
 }
 

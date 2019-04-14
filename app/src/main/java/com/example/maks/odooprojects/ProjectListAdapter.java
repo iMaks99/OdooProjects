@@ -13,7 +13,6 @@ import com.example.maks.odooprojects.models.ProjectProject;
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.ViewHolder> {

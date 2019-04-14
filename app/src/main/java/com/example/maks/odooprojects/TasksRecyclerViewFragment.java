@@ -1,10 +1,13 @@
 package com.example.maks.odooprojects;
 
 
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +18,7 @@ import com.example.maks.odooprojects.network.IGetDataService;
 import com.example.maks.odooprojects.network.RetrofitClientInstance;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,12 +35,21 @@ import retrofit2.Response;
  */
 public class TasksRecyclerViewFragment extends Fragment {
 
+    private ProgressDialog progressDialog;
+    private List<ProjectTask> projectTasks;
+
     public TasksRecyclerViewFragment() {
         // Required empty public constructor
     }
 
-    private ProgressDialog progressDialog;
-    private List<ProjectTask> projectTasks;
+    public static TasksRecyclerViewFragment newInstance(int id) {
+        TasksRecyclerViewFragment tasksRecyclerViewFragment = new TasksRecyclerViewFragment();
+        Bundle args = new Bundle();
+        args.putInt("stage_id", id);
+        tasksRecyclerViewFragment.setArguments(args);
+        return tasksRecyclerViewFragment;
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,10 +63,19 @@ public class TasksRecyclerViewFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         getActivity().setTitle("Tasks");
 
+        Bundle args = getArguments();
+        int stageId = -1;
+        try {
+            stageId = args.getInt("stage_id");
+        } catch (NullPointerException e) {
+            Log.w("TODO ALL TASKS!", e);
+        }
+
+
         if (getParentFragment() instanceof IGetProjectTasks) {
             IGetProjectTasks iGetProjectTasks = (IGetProjectTasks) getParentFragment();
             projectTasks = iGetProjectTasks.returnProjectTask();
-            createRecyclerView(view);
+            createRecyclerView(view, stageId);
         } else {
 
             progressDialog = new ProgressDialog(getContext());
@@ -67,11 +89,12 @@ public class TasksRecyclerViewFragment extends Fragment {
                     sharedPreferences.getString("db_name", "")
             );
 
+            int finalStageId = stageId;
             result.enqueue(new Callback<List<ProjectTask>>() {
                 @Override
                 public void onResponse(Call<List<ProjectTask>> call, Response<List<ProjectTask>> response) {
                     projectTasks = response.body();
-                    createRecyclerView(view);
+                    createRecyclerView(view, finalStageId);
                     progressDialog.dismiss();
                 }
 
@@ -82,13 +105,22 @@ public class TasksRecyclerViewFragment extends Fragment {
                 }
             });
         }
-
-
     }
 
-    private void createRecyclerView(View view) {
+    @TargetApi(Build.VERSION_CODES.N)
+    private void createRecyclerView(View view, int stageId) {
         RecyclerView recyclerView = view.findViewById(R.id.task_recycler_view);
-        recyclerView.setAdapter(new TaskListAdapter(projectTasks, getContext()));
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        if (stageId != -1) {
+            List<ProjectTask> projectTasksByStage = projectTasks.stream()
+                    .filter(t -> t.getStageId() == stageId)
+                    .collect(Collectors.toList());
+            recyclerView.setAdapter(new TaskListAdapter(projectTasksByStage, getContext()));
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        } else {
+
+            recyclerView.setAdapter(new TaskListAdapter(projectTasks, getContext()));
+            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        }
     }
 }
