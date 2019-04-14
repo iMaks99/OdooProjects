@@ -9,7 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.example.maks.odooprojects.network.GetDataService;
+import com.example.maks.odooprojects.network.IGetDataService;
 import com.example.maks.odooprojects.network.RetrofitClientInstance;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
@@ -21,7 +21,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -58,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements
             progressDialog.setMessage("Connecting to server...");
             progressDialog.show();
 
-            GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);
+            IGetDataService service = RetrofitClientInstance.getRetrofitInstance().create(IGetDataService.class);
 
             Call<ResponseBody> result = service.connectToDb(
                     sharedPreferences.getString("db_name", ""),
@@ -155,6 +154,7 @@ public class MainActivity extends AppCompatActivity implements
                 fragment = new ProjectsRecyclerViewFragment();
                 break;
             case R.id.nav_tasks:
+                fragment = new TasksRecyclerViewFragment();
                 break;
         }
 

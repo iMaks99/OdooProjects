@@ -10,7 +10,6 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -22,7 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.maks.odooprojects.network.GetDataService;
+import com.example.maks.odooprojects.network.IGetDataService;
 import com.example.maks.odooprojects.network.RetrofitClientInstance;
 
 
@@ -58,7 +57,7 @@ public class LoginFragment extends Fragment {
             SharedPreferences sharedPreferences = getContext().getSharedPreferences("AuthPref", Context.MODE_PRIVATE);
             String dbName = sharedPreferences.getString("db_name", "");
 
-            GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);
+            IGetDataService service = RetrofitClientInstance.getRetrofitInstance().create(IGetDataService.class);
             Call<String> result = service.login(
                     dbName,
                     ((EditText) getActivity().findViewById(R.id.user_email_et)).getText().toString()

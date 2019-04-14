@@ -22,10 +22,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.maks.odooprojects.network.GetDataService;
+import com.example.maks.odooprojects.network.IGetDataService;
 import com.example.maks.odooprojects.network.RetrofitClientInstance;
-
-import java.net.PasswordAuthentication;
 
 public class DBConnectionFragment extends Fragment {
 
@@ -53,7 +51,7 @@ public class DBConnectionFragment extends Fragment {
             progressDialog.setMessage("Loading projects...");
             progressDialog.show();
 
-            GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);
+            IGetDataService service = RetrofitClientInstance.getRetrofitInstance().create(IGetDataService.class);
 
             String dbName = ((EditText) getActivity().findViewById(R.id.db_name_et)).getText().toString();
             String dbHost = ((EditText) getActivity().findViewById(R.id.db_host_et)).getText().toString();

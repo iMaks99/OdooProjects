@@ -1,6 +1,9 @@
 package com.example.maks.odooprojects.network;
 
 import com.example.maks.odooprojects.models.ProjectProject;
+import com.example.maks.odooprojects.models.ProjectTask;
+import com.example.maks.odooprojects.models.ProjectTaskType;
+
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -10,14 +13,37 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
-public interface GetDataService {
+public interface IGetDataService {
 
     @GET("getprojectsall/")
     Call<List<ProjectProject>> getAllProjects(
             @Header("Authorization") String token,
             @Header("dbname") String dbname
     );
+
+    @GET("getusertasks/")
+    Call<List<ProjectTask>> gettUserTasks(
+            @Header("Authorization") String token,
+            @Header("dbname") String dbname
+    );
+
+    @GET("getprojecttasks")
+    Call<List<ProjectTask>> getProjectTasks(
+            @Header("Authorization") String token,
+            @Header("dbname") String dbname,
+            @Query("project_id") int projectId
+    );
+
+
+    @GET("getprojecttasktype")
+    Call<List<ProjectTaskType>> getProjectTaskStages(
+            @Header("Authorization") String token,
+            @Header("dbname") String dbname,
+            @Query("project_id") int projectId
+    );
+
 
     @FormUrlEncoded
     @POST("connection/")
@@ -26,7 +52,8 @@ public interface GetDataService {
             @Field("db_host") String db_host,
             @Field("db_port") String db_port,
             @Field("db_user") String db_user,
-            @Field("db_password") String db_password);
+            @Field("db_password") String db_password
+    );
 
 
     @FormUrlEncoded

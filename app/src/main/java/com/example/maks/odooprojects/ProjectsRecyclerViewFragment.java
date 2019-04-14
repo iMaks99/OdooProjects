@@ -8,9 +8,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import retrofit2.Call;
@@ -23,10 +21,9 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.example.maks.odooprojects.models.ProjectProject;
-import com.example.maks.odooprojects.network.GetDataService;
+import com.example.maks.odooprojects.network.IGetDataService;
 import com.example.maks.odooprojects.network.RetrofitClientInstance;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -37,11 +34,9 @@ public class ProjectsRecyclerViewFragment extends Fragment {
 
     ProgressDialog progressDialog;
 
-
     public ProjectsRecyclerViewFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,7 +56,7 @@ public class ProjectsRecyclerViewFragment extends Fragment {
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("AuthPref", Context.MODE_PRIVATE);
 
-        GetDataService service = RetrofitClientInstance.getRetrofitInstance().create(GetDataService.class);
+        IGetDataService service = RetrofitClientInstance.getRetrofitInstance().create(IGetDataService.class);
         Call<List<ProjectProject>> result = service.getAllProjects(
                 sharedPreferences.getString("token", ""),
                 sharedPreferences.getString("db_name", "")
@@ -85,7 +80,6 @@ public class ProjectsRecyclerViewFragment extends Fragment {
     private void generateDataList(List<ProjectProject> body) {
         RecyclerView recyclerView = getActivity().findViewById(R.id.project_recycler_view);
         recyclerView.setAdapter(new ProjectListAdapter(getContext(), body));
-
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 }
