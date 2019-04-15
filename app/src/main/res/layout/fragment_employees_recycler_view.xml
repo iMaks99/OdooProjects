@@ -3,14 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/projects_list_fr"
-    tools:context=".ProjectsRecyclerViewFragment">
+    tools:context=".EmployeesRecyclerViewFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/project_recycler_view"
-        tools:listitem="@layout/project_list_item_layout"
-        tools:ignore="PrivateResource" />
+        android:id="@+id/employee_recycler_view"
+        tools:listitem="@layout/employee_list_item_layout"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

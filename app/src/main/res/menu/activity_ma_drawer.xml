@@ -12,6 +12,9 @@
             android:id="@+id/nav_tasks"
             android:icon="@drawable/ic_menu_gallery"
             android:title="@string/tasks_title" />
+        <item
+            android:id="@+id/nav_departments"
+            android:title="@string/departments_title"/>
     </group>
 
     <!--<item android:title="Communicate">

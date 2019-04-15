@@ -21,7 +21,6 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
     private final Context context;
     private final LayoutInflater inflater;
 
-
     public ProjectListAdapter(Context context, List<ProjectProject> projects) {
         this.context = context;
         this.projectList = projects;

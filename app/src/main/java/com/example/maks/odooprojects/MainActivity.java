@@ -156,6 +156,9 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.nav_tasks:
                 fragment = new UserTasksTabbedFragment();
                 break;
+            case R.id.nav_departments:
+                fragment = new DepartmentsRecyclerViewFragment();
+                break;
         }
 
         showSelectedFragment(fragment);
