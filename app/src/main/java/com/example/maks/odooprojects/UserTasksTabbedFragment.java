@@ -1,6 +1,5 @@
 package com.example.maks.odooprojects;
 
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -16,9 +15,13 @@ import com.example.maks.odooprojects.network.IGetDataService;
 import com.example.maks.odooprojects.network.RetrofitClientInstance;
 import com.google.android.material.tabs.TabLayout;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -31,8 +34,8 @@ import retrofit2.Response;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TasksTabbedFragment extends Fragment
-        implements IGetProjectTasks{
+public class UserTasksTabbedFragment extends Fragment
+        implements IGetProjectTasks {
 
     ProgressDialog progressDialog;
     private List<ProjectTask> projectTaskList;
@@ -40,49 +43,46 @@ public class TasksTabbedFragment extends Fragment
     private IGetDataService service;
     private SharedPreferences sharedPreferences;
 
-    public TasksTabbedFragment() {
+    public UserTasksTabbedFragment() {
         // Required empty public constructor
     }
 
-    public static TasksTabbedFragment newInstance(int id) {
-        TasksTabbedFragment tasksTabbedFragment = new TasksTabbedFragment();
-        Bundle args = new Bundle();
-        args.putInt("project_id", id);
-        tasksTabbedFragment.setArguments(args);
-        return tasksTabbedFragment;
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-      return inflater.inflate(R.layout.fragment_tasks_tabbed, container, false);
+        return inflater.inflate(R.layout.fragment_tasks_tabbed, container, false);
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setElevation(0);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setElevation(0);
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Loading tasks...");
         progressDialog.show();
 
         service = RetrofitClientInstance.getRetrofitInstance().create(IGetDataService.class);
-
         sharedPreferences = getActivity().getSharedPreferences("AuthPref", Context.MODE_PRIVATE);
 
-        Call<List<ProjectTaskType>> stages = service.getProjectTaskStages(
+        Call<List<ProjectTaskType>> stages = service.getUserTasksStages(
                 sharedPreferences.getString("token", ""),
-                sharedPreferences.getString("db_name", ""),
-                getArguments().getInt("project_id")
+                sharedPreferences.getString("db_name", "")
         );
 
         stages.enqueue(new Callback<List<ProjectTaskType>>() {
             @Override
             public void onResponse(Call<List<ProjectTaskType>> call, Response<List<ProjectTaskType>> response) {
                 projectTaskTypes = response.body();
+                projectTaskTypes = projectTaskTypes.stream()
+                        .collect(Collectors.collectingAndThen(Collectors.toCollection(
+                                () -> new TreeSet<>(
+                                        Comparator.comparingInt(ProjectTaskType::getId)
+                                                .thenComparing(ProjectTaskType::getName))),
+                                ArrayList::new));
                 getTasks(view);
             }
 
@@ -92,15 +92,13 @@ public class TasksTabbedFragment extends Fragment
                 progressDialog.dismiss();
             }
         });
-
     }
 
-    private void getTasks(View view){
+    private void getTasks(View view) {
 
-        Call<List<ProjectTask>> result = service.getProjectTasks(
+        Call<List<ProjectTask>> result = service.getUserTasks(
                 sharedPreferences.getString("token", ""),
-                sharedPreferences.getString("db_name", ""),
-                getArguments().getInt("project_id")
+                sharedPreferences.getString("db_name", "")
         );
 
         result.enqueue(new Callback<List<ProjectTask>>() {
@@ -117,7 +115,7 @@ public class TasksTabbedFragment extends Fragment
 
                 TasksTabbedAdapter adapter = new TasksTabbedAdapter(getChildFragmentManager());
 
-                for(ProjectTaskType type : projectTaskTypes) {
+                for (ProjectTaskType type : projectTaskTypes) {
                     TasksRecyclerViewFragment tasksRecyclerViewFragment = TasksRecyclerViewFragment.newInstance(type.getId());
                     adapter.addFragment(tasksRecyclerViewFragment, type.getName());
                 }

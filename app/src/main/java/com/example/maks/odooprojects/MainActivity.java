@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements
                 fragment = new ProjectsRecyclerViewFragment();
                 break;
             case R.id.nav_tasks:
-                fragment = new TasksRecyclerViewFragment();
+                fragment = new UserTasksTabbedFragment();
                 break;
         }
 

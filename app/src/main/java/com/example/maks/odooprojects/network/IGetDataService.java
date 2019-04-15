@@ -24,7 +24,13 @@ public interface IGetDataService {
     );
 
     @GET("getusertasks/")
-    Call<List<ProjectTask>> gettUserTasks(
+    Call<List<ProjectTask>> getUserTasks(
+            @Header("Authorization") String token,
+            @Header("dbname") String dbname
+    );
+
+    @GET("getusertasksstages/")
+    Call<List<ProjectTaskType>> getUserTasksStages(
             @Header("Authorization") String token,
             @Header("dbname") String dbname
     );

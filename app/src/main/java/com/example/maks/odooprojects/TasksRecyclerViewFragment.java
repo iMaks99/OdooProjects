@@ -64,13 +64,7 @@ public class TasksRecyclerViewFragment extends Fragment {
         getActivity().setTitle("Tasks");
 
         Bundle args = getArguments();
-        int stageId = -1;
-        try {
-            stageId = args.getInt("stage_id");
-        } catch (NullPointerException e) {
-            Log.w("TODO ALL TASKS!", e);
-        }
-
+        int stageId = args.getInt("stage_id");
 
         if (getParentFragment() instanceof IGetProjectTasks) {
             IGetProjectTasks iGetProjectTasks = (IGetProjectTasks) getParentFragment();
@@ -84,7 +78,7 @@ public class TasksRecyclerViewFragment extends Fragment {
 
             IGetDataService service = RetrofitClientInstance.getRetrofitInstance().create(IGetDataService.class);
             SharedPreferences sharedPreferences = getActivity().getSharedPreferences("AuthPref", Context.MODE_PRIVATE);
-            Call<List<ProjectTask>> result = service.gettUserTasks(
+            Call<List<ProjectTask>> result = service.getUserTasks(
                     sharedPreferences.getString("token", ""),
                     sharedPreferences.getString("db_name", "")
             );
@@ -111,16 +105,10 @@ public class TasksRecyclerViewFragment extends Fragment {
     private void createRecyclerView(View view, int stageId) {
         RecyclerView recyclerView = view.findViewById(R.id.task_recycler_view);
 
-        if (stageId != -1) {
-            List<ProjectTask> projectTasksByStage = projectTasks.stream()
-                    .filter(t -> t.getStageId() == stageId)
-                    .collect(Collectors.toList());
-            recyclerView.setAdapter(new TaskListAdapter(projectTasksByStage, getContext()));
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        } else {
-
-            recyclerView.setAdapter(new TaskListAdapter(projectTasks, getContext()));
-            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        }
+        List<ProjectTask> projectTasksByStage = projectTasks.stream()
+                .filter(t -> t.getStageId() == stageId)
+                .collect(Collectors.toList());
+        recyclerView.setAdapter(new TaskListAdapter(projectTasksByStage, getContext()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 }
