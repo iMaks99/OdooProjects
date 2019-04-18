@@ -14,13 +14,17 @@ public class ProjectProject {
     private int tasksCount;
     @SerializedName("is_favourite")
     private Boolean isFavourite;
+    @SerializedName("color")
+    private int color;
 
-    public ProjectProject(int id, String name, String partner, int tasksCount, Boolean isFavourite) {
+    public ProjectProject(int id, String name, String partner, int tasksCount, Boolean isFavourite,
+                          int color) {
         this.id = id;
         this.name = name;
         this.partner = partner;
         this.tasksCount = tasksCount;
         this.isFavourite = isFavourite;
+        this.color = color;
     }
 
     public int getId() {
@@ -49,5 +53,9 @@ public class ProjectProject {
 
     public Boolean getFavourite() {
         return isFavourite;
+    }
+
+    public int getColor() {
+        return color;
     }
 }

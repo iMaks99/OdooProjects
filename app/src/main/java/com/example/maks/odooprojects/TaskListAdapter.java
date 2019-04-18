@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.maks.odooprojects.models.Colors;
 import com.example.maks.odooprojects.models.ProjectTask;
 
 import java.text.SimpleDateFormat;
@@ -48,6 +49,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         if (projectTask.getEmailFrom() != null)
             holder.taskEmailFrom.setText(projectTask.getEmailFrom());
 
+        holder.taskColor.setBackgroundColor(Colors.getColor(projectTask.getColor()));
+
         holder.itemView.setOnClickListener(v -> {
             TaskInfoFragment taskInfoFragment = TaskInfoFragment.newInstance(projectTask.getId());
             ((MainActivity) context).getSupportFragmentManager()
@@ -71,6 +74,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         ImageView taskPriority;
         ImageView taskSchedule;
         ImageView taskAssignedTo;
+        View taskColor;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -81,6 +85,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             taskPriority = itemView.findViewById(R.id.task_priority_iv);
             taskSchedule = itemView.findViewById(R.id.task_schedule_iv);
             taskAssignedTo = itemView.findViewById(R.id.task_assigned_to_iv);
+            taskColor = itemView.findViewById(R.id.task_color_v);
         }
     }
 }

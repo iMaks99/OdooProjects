@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.maks.odooprojects.models.Colors;
 import com.example.maks.odooprojects.models.ProjectProject;
 
 import java.util.List;
@@ -50,9 +51,11 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         else
             holder.isFavouriteProject.setImageResource(R.drawable.ic_star_border);
 
+        holder.projectColor.setBackgroundColor(Colors.getColor(project.getColor()));
+
         holder.itemView.setOnClickListener(v -> {
             TasksTabbedFragment tasksTabbedFragment = TasksTabbedFragment.newInstance(project.getId());
-           ((MainActivity) context).getSupportFragmentManager()
+            ((MainActivity) context).getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.content_frame, tasksTabbedFragment)
                     .addToBackStack(null)
@@ -71,6 +74,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         TextView projectCustomers;
         TextView projectTasksNumber;
         ImageView isFavouriteProject;
+        View projectColor;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -79,6 +83,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
             projectCustomers = itemView.findViewById(R.id.project_customers_tv);
             projectTasksNumber = itemView.findViewById(R.id.project_number_tasks_tv);
             isFavouriteProject = itemView.findViewById(R.id.project_add_to_favourites_iv);
+            projectColor = itemView.findViewById(R.id.project_color_v);
         }
     }
 }
