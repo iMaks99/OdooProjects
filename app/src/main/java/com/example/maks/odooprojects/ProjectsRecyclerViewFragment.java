@@ -57,12 +57,12 @@ public class ProjectsRecyclerViewFragment extends Fragment {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("AuthPref", Context.MODE_PRIVATE);
 
         IGetDataService service = RetrofitClientInstance.getRetrofitInstance().create(IGetDataService.class);
-        Call<List<ProjectProject>> result = service.getAllProjects(
+        Call<List<ProjectProject>> request = service.getAllProjects(
                 sharedPreferences.getString("token", ""),
                 sharedPreferences.getString("db_name", "")
         );
 
-        result.enqueue(new Callback<List<ProjectProject>>() {
+        request.enqueue(new Callback<List<ProjectProject>>() {
             @Override
             public void onResponse(Call<List<ProjectProject>> call, Response<List<ProjectProject>> response) {
                 progressDialog.dismiss();

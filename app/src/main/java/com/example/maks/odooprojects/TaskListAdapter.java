@@ -41,12 +41,21 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
         holder.taskName.setText(projectTask.getName());
 
-        if(projectTask.getDeadline() != null){
+        if (projectTask.getDeadline() != null) {
             SimpleDateFormat fmt = new SimpleDateFormat("dd.MM.yyyy");
             holder.taskDeadline.setText(fmt.format(projectTask.getDeadline()));
         }
-        if(projectTask.getEmailFrom() != null)
+        if (projectTask.getEmailFrom() != null)
             holder.taskEmailFrom.setText(projectTask.getEmailFrom());
+
+        holder.itemView.setOnClickListener(v -> {
+            TaskInfoFragment taskInfoFragment = TaskInfoFragment.newInstance(projectTask.getId());
+            ((MainActivity) context).getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.content_frame, taskInfoFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
     }
 
     @Override
@@ -54,7 +63,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         return taskList.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder{
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView taskName;
         TextView taskDeadline;

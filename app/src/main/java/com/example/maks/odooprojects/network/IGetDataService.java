@@ -44,6 +44,12 @@ public interface IGetDataService {
             @Query("project_id") int projectId
     );
 
+    @GET("gettaskbyid/")
+    Call<ProjectTask> getTaskById(
+            @Header("Authorization") String token,
+            @Header("dbname") String dbname,
+            @Query("task_id") int taskId
+    );
 
     @GET("getprojecttasktype")
     Call<List<ProjectTaskType>> getProjectTaskStages(
