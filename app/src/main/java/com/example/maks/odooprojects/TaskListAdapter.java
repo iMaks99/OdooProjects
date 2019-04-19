@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.example.maks.odooprojects.models.Colors;
 import com.example.maks.odooprojects.models.ProjectTask;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -51,6 +52,14 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
         holder.taskColor.setBackgroundColor(Colors.getColor(projectTask.getColor()));
 
+        holder.showModalSheet.setOnClickListener(v -> {
+            View view = inflater.inflate(R.layout.fragment_task_modal_bottom_sheet, null);
+
+            BottomSheetDialog dialog = new BottomSheetDialog(context);
+            dialog.setContentView(view);
+            dialog.show();
+        });
+
         holder.itemView.setOnClickListener(v -> {
             TaskInfoFragment taskInfoFragment = TaskInfoFragment.newInstance(projectTask.getId());
             ((MainActivity) context).getSupportFragmentManager()
@@ -75,6 +84,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         ImageView taskSchedule;
         ImageView taskAssignedTo;
         View taskColor;
+        ImageView showModalSheet;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -86,6 +96,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             taskSchedule = itemView.findViewById(R.id.task_schedule_iv);
             taskAssignedTo = itemView.findViewById(R.id.task_assigned_to_iv);
             taskColor = itemView.findViewById(R.id.task_color_v);
+            showModalSheet = itemView.findViewById(R.id.show_task_modal_sheet);
         }
     }
 }

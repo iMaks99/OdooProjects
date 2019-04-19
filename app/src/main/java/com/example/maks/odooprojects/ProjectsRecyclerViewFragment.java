@@ -82,4 +82,5 @@ public class ProjectsRecyclerViewFragment extends Fragment {
         recyclerView.setAdapter(new ProjectListAdapter(getContext(), body));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
+
 }

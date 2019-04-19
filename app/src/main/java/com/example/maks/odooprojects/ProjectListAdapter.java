@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.example.maks.odooprojects.models.Colors;
 import com.example.maks.odooprojects.models.ProjectProject;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import java.util.List;
 
@@ -53,6 +54,14 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
 
         holder.projectColor.setBackgroundColor(Colors.getColor(project.getColor()));
 
+        holder.showModalSheet.setOnClickListener(v -> {
+            View view = inflater.inflate(R.layout.fragment_project_modal_bottom_sheet, null);
+
+            BottomSheetDialog dialog = new BottomSheetDialog(context);
+            dialog.setContentView(view);
+            dialog.show();
+        });
+
         holder.itemView.setOnClickListener(v -> {
             TasksTabbedFragment tasksTabbedFragment = TasksTabbedFragment.newInstance(project.getId());
             ((MainActivity) context).getSupportFragmentManager()
@@ -61,6 +70,8 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
                     .addToBackStack(null)
                     .commit();
         });
+
+
     }
 
     @Override
@@ -75,10 +86,12 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         TextView projectTasksNumber;
         ImageView isFavouriteProject;
         View projectColor;
+        ImageView showModalSheet;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            showModalSheet = itemView.findViewById(R.id.show_project_modal_sheet);
             projectName = itemView.findViewById(R.id.project_name_tv);
             projectCustomers = itemView.findViewById(R.id.project_customers_tv);
             projectTasksNumber = itemView.findViewById(R.id.project_number_tasks_tv);

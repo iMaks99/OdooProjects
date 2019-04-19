@@ -165,9 +165,8 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_margin="8dp"
+        android:background="@android:color/darker_gray" />
 
-        android:background="#2C8296" />
-    <!--android:background="@android:color/darker_gray"-->
     <TextView
         android:id="@+id/task_info_extra"
         android:layout_width="80dp"
