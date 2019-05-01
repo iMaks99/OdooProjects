@@ -111,7 +111,7 @@ public class TaskInfoFragment extends Fragment {
                 if(task.getDescription() != null)
                     taskDescription.setText(HtmlCompat.fromHtml(task.getDescription(), HtmlCompat.FROM_HTML_MODE_LEGACY));
 
-                if(task.isPriority())
+                if(task.isPriority() == 1)
                     taskPriority.setImageResource(R.drawable.ic_star_filled);
                 else
                     taskPriority.setImageResource(R.drawable.ic_star_border);

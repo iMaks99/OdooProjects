@@ -2,6 +2,7 @@ package com.example.maks.odooprojects.network;
 
 import com.example.maks.odooprojects.models.HRDepartment;
 import com.example.maks.odooprojects.models.HREmployee;
+import com.example.maks.odooprojects.models.MailActivity;
 import com.example.maks.odooprojects.models.ProjectProject;
 import com.example.maks.odooprojects.models.ProjectTask;
 import com.example.maks.odooprojects.models.ProjectTaskType;
@@ -58,6 +59,12 @@ public interface IGetDataService {
             @Query("project_id") int projectId
     );
 
+    @GET("gettaskmailactivity/")
+    Call<List<MailActivity>> getTaskMailActivity(
+            @Header("Authorization") String token,
+            @Header("dbname") String dbname,
+            @Query("task_id") int taskId
+    );
 
     @FormUrlEncoded
     @POST("connection/")

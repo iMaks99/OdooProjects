@@ -15,6 +15,9 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHolder> {
@@ -60,6 +63,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             dialog.show();
         });
 
+        if(projectTask.isPriority() == 1)
+            holder.taskPriority.setImageResource(R.drawable.ic_star_filled);
+        else
+            holder.taskPriority.setImageResource(R.drawable.ic_star_border);
+
         holder.itemView.setOnClickListener(v -> {
             TaskInfoFragment taskInfoFragment = TaskInfoFragment.newInstance(projectTask.getId());
             ((MainActivity) context).getSupportFragmentManager()
@@ -67,6 +75,18 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                     .replace(R.id.content_frame, taskInfoFragment)
                     .addToBackStack(null)
                     .commit();
+        });
+
+        holder.taskSchedule.setOnClickListener(v -> {
+            FragmentTransaction ft = ((MainActivity) context).getSupportFragmentManager().beginTransaction();
+            Fragment prev = ((MainActivity) context).getSupportFragmentManager().findFragmentByTag("dialog");
+            if (prev != null) {
+                ft.remove(prev);
+            }
+            ft.addToBackStack(null);
+
+            DialogFragment dialogFragment = TaskMailActivityDialogFragment.newInstance(projectTask.getId());
+            dialogFragment.show(ft, "dialog");
         });
     }
 

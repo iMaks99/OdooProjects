@@ -15,7 +15,7 @@ public class ProjectTask {
     @SerializedName("email_from")
     private String emailFrom;
     @SerializedName("priority")
-    private boolean isPriority;
+    private int isPriority;
     @SerializedName("date_deadline")
     private Date deadline;
     @SerializedName("mail_activity_state")
@@ -35,7 +35,7 @@ public class ProjectTask {
     @SerializedName("color")
     private int color;
 
-    public ProjectTask(int id, String name, Date deadline, String emailFrom, boolean isPriority,
+    public ProjectTask(int id, String name, Date deadline, String emailFrom, int isPriority,
                        String kanbanState, int mailActivityState, int stageId, String description,
                        String projectName, int plannedHours, String assignedTo, List<ProjectTaskTag> tags,
                        int color) {
@@ -72,7 +72,7 @@ public class ProjectTask {
         return emailFrom;
     }
 
-    public boolean isPriority() {
+    public int isPriority() {
         return isPriority;
     }
 
