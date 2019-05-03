@@ -10,6 +10,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -22,6 +23,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.maks.odooprojects.network.IGetDataService;
+import com.example.maks.odooprojects.network.MessagingService;
 import com.example.maks.odooprojects.network.RetrofitClientInstance;
 
 
@@ -60,6 +62,7 @@ public class LoginFragment extends Fragment {
             IGetDataService service = RetrofitClientInstance.getRetrofitInstance().create(IGetDataService.class);
             Call<String> result = service.login(
                     dbName,
+                    MessagingService.getToken(getContext()),
                     ((EditText) getActivity().findViewById(R.id.user_email_et)).getText().toString()
             );
 
@@ -72,7 +75,6 @@ public class LoginFragment extends Fragment {
                         String token = response.body();
 
                         sharedPreferences.edit().putString("token", token).apply();
-
                         Toast.makeText(getContext(), "Logged in", Toast.LENGTH_SHORT).show();
 
                         Intent intent = new Intent(getContext(), MainActivity.class);

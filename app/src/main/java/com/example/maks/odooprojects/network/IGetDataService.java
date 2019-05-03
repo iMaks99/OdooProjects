@@ -93,6 +93,7 @@ public interface IGetDataService {
     @POST("login/")
     Call<String> login(
             @Field("db_name") String db_name,
+            @Field("fcm_token") String fcm_token,
             @Field("user_mail") String db_mail
     );
 }
