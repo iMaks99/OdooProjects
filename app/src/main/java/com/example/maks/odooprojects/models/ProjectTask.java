@@ -30,14 +30,18 @@ public class ProjectTask {
     private int plannedHours;
     @SerializedName("assigned_to")
     private String assignedTo;
+    @SerializedName("assigned_to_id")
+    private int assignedToId;
     @SerializedName("tags")
     private List<ProjectTaskTag> tags;
     @SerializedName("color")
     private int color;
 
+    public ProjectTask(){}
+
     public ProjectTask(int id, String name, Date deadline, String emailFrom, int isPriority,
                        String kanbanState, int mailActivityState, int stageId, String description,
-                       String projectName, int plannedHours, String assignedTo, List<ProjectTaskTag> tags,
+                       String projectName, int plannedHours, String assignedTo, int assignedToId, List<ProjectTaskTag> tags,
                        int color) {
         this.id = id;
         this.name = name;
@@ -51,10 +55,66 @@ public class ProjectTask {
         this.projectName = projectName;
         this.plannedHours = plannedHours;
         this.assignedTo = assignedTo;
+        this.assignedToId = assignedToId;
         this.tags = tags;
         this.color = color;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setKanbanState(String kanbanState) {
+        this.kanbanState = kanbanState;
+    }
+
+    public void setEmailFrom(String emailFrom) {
+        this.emailFrom = emailFrom;
+    }
+
+    public void setIsPriority(int isPriority) {
+        this.isPriority = isPriority;
+    }
+
+    public void setDeadline(Date deadline) {
+        this.deadline = deadline;
+    }
+
+    public void setMailActivityState(int mailActivityState) {
+        this.mailActivityState = mailActivityState;
+    }
+
+    public void setStageId(int stageId) {
+        this.stageId = stageId;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
+    }
+
+    public void setPlannedHours(int plannedHours) {
+        this.plannedHours = plannedHours;
+    }
+
+    public void setAssignedTo(String assignedTo) {
+        this.assignedTo = assignedTo;
+    }
+
+    public void setAssignedToId(int assignedToId) {
+        this.assignedToId = assignedToId;
+    }
+
+    public void setTags(List<ProjectTaskTag> tags) {
+        this.tags = tags;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
 
     public int getId() {
         return id;
@@ -110,6 +170,10 @@ public class ProjectTask {
 
     public int getColor() {
         return color;
+    }
+
+    public int getAssignedToId() {
+        return assignedToId;
     }
 }
 

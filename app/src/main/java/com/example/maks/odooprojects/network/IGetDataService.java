@@ -6,11 +6,15 @@ import com.example.maks.odooprojects.models.MailActivity;
 import com.example.maks.odooprojects.models.ProjectProject;
 import com.example.maks.odooprojects.models.ProjectTask;
 import com.example.maks.odooprojects.models.ProjectTaskType;
+import com.example.maks.odooprojects.models.ResPartner;
 
+import java.util.Calendar;
 import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
@@ -38,11 +42,18 @@ public interface IGetDataService {
             @Header("dbname") String dbname
     );
 
-    @GET("getprojecttasks")
+    @GET("getprojecttasks/")
     Call<List<ProjectTask>> getProjectTasks(
             @Header("Authorization") String token,
             @Header("dbname") String dbname,
             @Query("project_id") int projectId
+    );
+
+    @POST("addprojecttask/")
+    Call<ResponseBody> newProjectTask(
+            @Header("Authorization") String token,
+            @Header("dbname") String dbname,
+            @Body ProjectTask projectTask
     );
 
     @GET("gettaskbyid/")
@@ -87,6 +98,12 @@ public interface IGetDataService {
             @Header("Authorization") String token,
             @Header("dbname") String dbname,
             @Query("department_id") int departmentId
+    );
+
+    @GET("getrespartners/")
+    Call<List<ResPartner>> getPartners(
+            @Header("Authorization") String token,
+            @Header("dbname") String dbname
     );
 
     @FormUrlEncoded

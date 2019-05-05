@@ -33,6 +33,7 @@ import java.util.List;
 public class ProjectsRecyclerViewFragment extends Fragment {
 
     ProgressDialog progressDialog;
+    List<ProjectProject> mProjects;
 
     public ProjectsRecyclerViewFragment() {
         // Required empty public constructor
@@ -78,9 +79,9 @@ public class ProjectsRecyclerViewFragment extends Fragment {
     }
 
     private void generateDataList(List<ProjectProject> body) {
+        mProjects = body;
         RecyclerView recyclerView = getActivity().findViewById(R.id.project_recycler_view);
         recyclerView.setAdapter(new ProjectListAdapter(getContext(), body));
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
-
 }

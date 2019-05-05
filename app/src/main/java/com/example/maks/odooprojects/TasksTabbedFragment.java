@@ -44,10 +44,11 @@ public class TasksTabbedFragment extends Fragment
         // Required empty public constructor
     }
 
-    public static TasksTabbedFragment newInstance(int id) {
+    public static TasksTabbedFragment newInstance(int projectId, String projectName) {
         TasksTabbedFragment tasksTabbedFragment = new TasksTabbedFragment();
         Bundle args = new Bundle();
-        args.putInt("project_id", id);
+        args.putInt("project_id", projectId);
+        args.putString("project_name", projectName);
         tasksTabbedFragment.setArguments(args);
         return tasksTabbedFragment;
     }
@@ -97,10 +98,12 @@ public class TasksTabbedFragment extends Fragment
 
     private void getTasks(View view){
 
+        int projectId = getArguments().getInt("project_id");
+        String projectName = getArguments().getString("project_name");
         Call<List<ProjectTask>> result = service.getProjectTasks(
                 sharedPreferences.getString("token", ""),
                 sharedPreferences.getString("db_name", ""),
-                getArguments().getInt("project_id")
+                projectId
         );
 
         result.enqueue(new Callback<List<ProjectTask>>() {
@@ -118,7 +121,8 @@ public class TasksTabbedFragment extends Fragment
                 TasksTabbedAdapter adapter = new TasksTabbedAdapter(getChildFragmentManager());
 
                 for(ProjectTaskType type : projectTaskTypes) {
-                    TasksRecyclerViewFragment tasksRecyclerViewFragment = TasksRecyclerViewFragment.newInstance(type.getId());
+                    TasksRecyclerViewFragment tasksRecyclerViewFragment = TasksRecyclerViewFragment
+                            .newInstance(type.getId(), projectId, projectName);
                     adapter.addFragment(tasksRecyclerViewFragment, type.getName());
                 }
 

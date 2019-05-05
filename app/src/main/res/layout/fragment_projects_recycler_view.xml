@@ -3,14 +3,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/projects_list_fr"
     tools:context=".ProjectsRecyclerViewFragment">
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/project_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/project_recycler_view"
-        tools:listitem="@layout/project_list_item_layout"
-        tools:ignore="PrivateResource" />
+        tools:ignore="PrivateResource"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp"
+        tools:listitem="@layout/project_list_item_layout" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

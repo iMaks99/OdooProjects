@@ -63,7 +63,8 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
         });
 
         holder.itemView.setOnClickListener(v -> {
-            TasksTabbedFragment tasksTabbedFragment = TasksTabbedFragment.newInstance(project.getId());
+            TasksTabbedFragment tasksTabbedFragment = TasksTabbedFragment
+                    .newInstance(project.getId(), project.getName());
             ((MainActivity) context).getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.content_frame, tasksTabbedFragment)

@@ -16,6 +16,8 @@ import android.widget.Toast;
 import com.example.maks.odooprojects.models.ProjectTask;
 import com.example.maks.odooprojects.network.IGetDataService;
 import com.example.maks.odooprojects.network.RetrofitClientInstance;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,6 +27,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -42,10 +45,20 @@ public class TasksRecyclerViewFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static TasksRecyclerViewFragment newInstance(int id) {
+    public static TasksRecyclerViewFragment newInstance(int stageId, int projectId, String projectName) {
         TasksRecyclerViewFragment tasksRecyclerViewFragment = new TasksRecyclerViewFragment();
         Bundle args = new Bundle();
-        args.putInt("stage_id", id);
+        args.putInt("stage_id", stageId);
+        args.putInt("project_id", projectId);
+        args.putString("project_name", projectName);
+        tasksRecyclerViewFragment.setArguments(args);
+        return tasksRecyclerViewFragment;
+    }
+
+    public static TasksRecyclerViewFragment getInstance(int stageId) {
+        TasksRecyclerViewFragment tasksRecyclerViewFragment = new TasksRecyclerViewFragment();
+        Bundle args = new Bundle();
+        args.putInt("stage_id", stageId);
         tasksRecyclerViewFragment.setArguments(args);
         return tasksRecyclerViewFragment;
     }
@@ -65,6 +78,20 @@ public class TasksRecyclerViewFragment extends Fragment {
 
         Bundle args = getArguments();
         int stageId = args.getInt("stage_id");
+        int projectId = args.getInt("project_id");
+        String projectName = args.getString("project_name");
+
+        FloatingActionButton fab = view.findViewById(R.id.add_project_task_fab);
+        fab.setOnClickListener(v -> {
+
+            CreateProjectTaskFragment createProjectTaskFragment = CreateProjectTaskFragment
+                    .newInstance(projectId, projectName);
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.content_frame, createProjectTaskFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
 
         if (getParentFragment() instanceof IGetProjectTasks) {
             IGetProjectTasks iGetProjectTasks = (IGetProjectTasks) getParentFragment();
@@ -83,12 +110,11 @@ public class TasksRecyclerViewFragment extends Fragment {
                     sharedPreferences.getString("db_name", "")
             );
 
-            int finalStageId = stageId;
             result.enqueue(new Callback<List<ProjectTask>>() {
                 @Override
                 public void onResponse(Call<List<ProjectTask>> call, Response<List<ProjectTask>> response) {
                     projectTasks = response.body();
-                    createRecyclerView(view, finalStageId);
+                    createRecyclerView(view, stageId);
                     progressDialog.dismiss();
                 }
 

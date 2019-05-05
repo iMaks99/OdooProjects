@@ -115,7 +115,7 @@ public class UserTasksTabbedFragment extends Fragment
                 TasksTabbedAdapter adapter = new TasksTabbedAdapter(getChildFragmentManager());
 
                 for (ProjectTaskType type : projectTaskTypes) {
-                    TasksRecyclerViewFragment tasksRecyclerViewFragment = TasksRecyclerViewFragment.newInstance(type.getId());
+                    TasksRecyclerViewFragment tasksRecyclerViewFragment = TasksRecyclerViewFragment.getInstance(type.getId());
                     adapter.addFragment(tasksRecyclerViewFragment, type.getName());
                 }
 
