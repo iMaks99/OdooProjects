@@ -67,7 +67,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
                     .newInstance(project.getId(), project.getName());
             ((MainActivity) context).getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.content_frame, tasksTabbedFragment)
+                    .replace(R.id.content_frame, tasksTabbedFragment, "projectTaskFragment")
                     .addToBackStack(null)
                     .commit();
         });

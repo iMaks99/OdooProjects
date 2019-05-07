@@ -325,25 +325,26 @@ public class CreateProjectTaskFragment extends Fragment {
     private void createNewTask(IGetDataService service, SharedPreferences sharedPreferences,
                                ProjectTask projectTask) {
 
-        Call<ResponseBody> result = service.newProjectTask(
+        Call<Integer> result = service.newProjectTask(
                 sharedPreferences.getString("token", ""),
                 sharedPreferences.getString("db_name", ""),
                 projectTask
         );
 
-        result.enqueue(new Callback<ResponseBody>() {
+        result.enqueue(new Callback<Integer>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful())
-                    Snackbar.make(getActivity().findViewById(R.id.content_frame), "Test Task successfully created!", Snackbar.LENGTH_LONG)
+            public void onResponse(Call<Integer> call, Response<Integer> response) {
+                if (response.isSuccessful()) {
+                    Snackbar.make(getActivity().findViewById(R.id.content_frame), "Task successfully created!", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
-                else
-                    Snackbar.make(getActivity().findViewById(R.id.content_frame), "Test Task does not created", Snackbar.LENGTH_LONG)
+                    projectTask.setId(response.body());
+                } else
+                    Snackbar.make(getActivity().findViewById(R.id.content_frame), "Task does not created", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(Call<Integer> call, Throwable t) {
                 Snackbar.make(getActivity().findViewById(R.id.content_frame), "Ooops...", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }

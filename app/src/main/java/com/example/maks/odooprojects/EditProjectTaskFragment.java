@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.maks.odooprojects.models.ProjectTask;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -19,6 +21,14 @@ public class EditProjectTaskFragment extends Fragment {
 
     public EditProjectTaskFragment() {
         // Required empty public constructor
+    }
+
+    public static EditProjectTaskFragment newInstance(int projectId) {
+        Bundle args = new Bundle();
+        args.putInt("project_id", projectId);
+        EditProjectTaskFragment editProjectTaskFragment = new EditProjectTaskFragment();
+        editProjectTaskFragment.setArguments(args);
+        return editProjectTaskFragment;
     }
 
     @Override
@@ -31,6 +41,8 @@ public class EditProjectTaskFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Bundle args = getArguments();
+        int projectId = args.getInt("project_id");
 
     }
 }

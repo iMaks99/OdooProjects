@@ -51,10 +51,17 @@ public interface IGetDataService {
     );
 
     @POST("addprojecttask/")
-    Call<ResponseBody> newProjectTask(
+    Call<Integer> newProjectTask(
             @Header("Authorization") String token,
             @Header("dbname") String dbname,
             @Body ProjectTask projectTask
+    );
+
+    @GET("deleteprojecttask/")
+    Call<ResponseBody> deleteProjectTask(
+            @Header("Authorization") String token,
+            @Header("dbname") String dbname,
+            @Query("task_id") int taskId
     );
 
     @GET("gettaskbyid/")
