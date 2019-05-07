@@ -17,6 +17,14 @@ public class ProjectTaskTag {
         this.color = color;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
     public int getId() {
         return id;
     }

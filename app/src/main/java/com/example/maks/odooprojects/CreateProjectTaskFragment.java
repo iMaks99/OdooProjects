@@ -3,9 +3,7 @@ package com.example.maks.odooprojects;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.os.Binder;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -19,7 +17,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
@@ -27,17 +24,20 @@ import android.widget.TextView;
 
 import com.example.maks.odooprojects.models.ProjectProject;
 import com.example.maks.odooprojects.models.ProjectTask;
+import com.example.maks.odooprojects.models.ProjectTaskTag;
 import com.example.maks.odooprojects.models.ProjectTaskType;
 import com.example.maks.odooprojects.models.ResPartner;
 import com.example.maks.odooprojects.network.IGetDataService;
 import com.example.maks.odooprojects.network.RetrofitClientInstance;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-import java.util.ResourceBundle;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -53,6 +53,7 @@ public class CreateProjectTaskFragment extends Fragment {
     List<ResPartner> mPartners;
     List<ProjectProject> mProjects;
     List<ProjectTaskType> mStages;
+    List<ProjectTaskTag> mTags;
 
     public CreateProjectTaskFragment() {
         // Required empty public constructor
@@ -72,7 +73,7 @@ public class CreateProjectTaskFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_create_project_task, container, false);
+        return inflater.inflate(R.layout.fragment_change_project_task, container, false);
     }
 
     @Override
@@ -138,8 +139,7 @@ public class CreateProjectTaskFragment extends Fragment {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+            public void onNothingSelected(AdapterView<?> parent) { }
         });
 
         Spinner taskProject = view.findViewById(R.id.new_project_task_project_sp);
@@ -168,8 +168,7 @@ public class CreateProjectTaskFragment extends Fragment {
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
+            public void onNothingSelected(AdapterView<?> parent) { }
         });
 
         Spinner taskAssigned = view.findViewById(R.id.new_project_task_assigned_sp);
@@ -195,6 +194,45 @@ public class CreateProjectTaskFragment extends Fragment {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) { }
+        });
+
+        Call<List<ProjectTaskTag>> request = service.getTaskTagsAll(
+                sharedPreferences.getString("token", ""),
+                sharedPreferences.getString("db_name", "")
+        );
+
+        request.enqueue(new Callback<List<ProjectTaskTag>>() {
+            @Override
+            public void onResponse(Call<List<ProjectTaskTag>> call, Response<List<ProjectTaskTag>> response) {
+                mTags = response.body();
+                ChipGroup selectTaskTags = view.findViewById(R.id.new_project_task_tags_chg);
+                for(ProjectTaskTag tag : mTags){
+                    View v = LayoutInflater.from(getContext()).inflate(R.layout.task_tag_select_chip, selectTaskTags, false);
+                    Chip tagChip = v.findViewById(R.id.filter_chip_task_tag);
+                    tagChip.setText(tag.getName());
+
+                    tagChip.setOnCheckedChangeListener((ch, isSelecred) -> {
+
+                        ProjectTaskTag projectTaskTag = mTags.stream().filter(t -> t.getName() == ch.getText().toString()).findFirst().orElse(null);
+
+                        if(task.getTags() == null)
+                            task.setTags(new ArrayList<>());
+
+                        if(isSelecred)
+                            task.getTags().add(projectTaskTag);
+                        else
+                            task.getTags().remove(projectTaskTag);
+                    });
+
+                    selectTaskTags.addView(tagChip);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ProjectTaskTag>> call, Throwable t) {
+                Snackbar.make(getActivity().findViewById(R.id.content_frame), "Internet connection lost", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
         });
 
         Button taskSave = view.findViewById(R.id.new_project_task_save_btn);

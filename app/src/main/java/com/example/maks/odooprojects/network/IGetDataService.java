@@ -5,6 +5,7 @@ import com.example.maks.odooprojects.models.HREmployee;
 import com.example.maks.odooprojects.models.MailActivity;
 import com.example.maks.odooprojects.models.ProjectProject;
 import com.example.maks.odooprojects.models.ProjectTask;
+import com.example.maks.odooprojects.models.ProjectTaskTag;
 import com.example.maks.odooprojects.models.ProjectTaskType;
 import com.example.maks.odooprojects.models.ResPartner;
 
@@ -75,6 +76,12 @@ public interface IGetDataService {
             @Header("Authorization") String token,
             @Header("dbname") String dbname,
             @Query("task_id") int taskId
+    );
+
+    @GET("gettasktagsall/")
+    Call<List<ProjectTaskTag>> getTaskTagsAll(
+            @Header("Authorization") String token,
+            @Header("dbname") String dbname
     );
 
     @FormUrlEncoded

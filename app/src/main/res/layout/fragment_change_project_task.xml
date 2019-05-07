@@ -74,13 +74,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="12dp"
         android:text="Tags"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="@+id/new_project_task_assignedto"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/new_project_task_deadline_ev" />
+        app:layout_constraintTop_toTopOf="@+id/new_project_task_tags_chg" />
 
     <Spinner
         android:id="@+id/new_project_task_project_sp"
@@ -111,7 +110,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:clickable="true"
         android:ems="10"
@@ -153,6 +152,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
+        android:gravity="bottom|end"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -162,17 +162,29 @@
             android:id="@+id/new_project_task_discard_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginEnd="4dp"
+            android:layout_weight="1"
             android:text="@string/discard" />
 
         <Button
             android:id="@+id/new_project_task_save_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:layout_marginStart="4dp"
+            android:layout_weight="1"
             android:text="@string/save" />
     </LinearLayout>
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/new_project_task_tags_chg"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/new_project_task_tags"
+        app:layout_constraintTop_toBottomOf="@+id/new_project_task_deadline_ev"
+        app:singleSelection="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
