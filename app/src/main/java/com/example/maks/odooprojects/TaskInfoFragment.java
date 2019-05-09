@@ -31,6 +31,7 @@ import com.example.maks.odooprojects.network.RetrofitClientInstance;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import retrofit2.Call;
@@ -88,6 +89,7 @@ public class TaskInfoFragment extends Fragment {
         TextView taskProject = view.findViewById(R.id.task_info_project_tv);
         TextView taskAssignedTo = view.findViewById(R.id.task_info_assignedto_tv);
         TextView taskDescription = view.findViewById(R.id.task_info_description_tv);
+        TextView taskDeadline = view.findViewById(R.id.task_info_deadline_tv);
         ImageView taskPriority = view.findViewById(R.id.task_info_priority_iv);
         ChipGroup taskTags = view.findViewById(R.id.task_info_tags_chg);
 
@@ -107,6 +109,11 @@ public class TaskInfoFragment extends Fragment {
 
                 if(task.getAssignedTo() != null)
                     taskAssignedTo.setText(task.getAssignedTo());
+
+                if(task.getDeadline() != null){
+                    SimpleDateFormat fmt = new SimpleDateFormat("dd.MM.yyyy");
+                    taskDeadline.setText(fmt.format(task.getDeadline()));
+                }
 
                 if(task.getDescription() != null)
                     taskDescription.setText(HtmlCompat.fromHtml(task.getDescription(), HtmlCompat.FROM_HTML_MODE_LEGACY));
