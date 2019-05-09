@@ -131,7 +131,7 @@ public class TasksTabbedFragment extends Fragment
                 projectTaskList = response.body();
 
                 final ViewPager viewPager = view.findViewById(R.id.view_pager);
-                viewPager.setOffscreenPageLimit(0);
+                viewPager.setOffscreenPageLimit(projectTaskTypes.size());
 
                 TabLayout tabLayout = view.findViewById(R.id.tabLayout);
                 tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);

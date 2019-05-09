@@ -118,8 +118,7 @@ public class TasksRecyclerViewFragment extends Fragment {
                 .filter(t -> t.getStageId() == stageId)
                 .collect(Collectors.toList());
 
-        adapter = new TaskListAdapter(projectTasksByStage, stageId, projectTasksTypes,
-                getContext());
+        adapter = new TaskListAdapter(projectTasksByStage, stageId, projectTasksTypes, getContext());
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));

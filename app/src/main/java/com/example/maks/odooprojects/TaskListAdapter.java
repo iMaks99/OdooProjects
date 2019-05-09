@@ -103,18 +103,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                 builder.setItems(taskTypeList.stream().map(s -> s.getName()).toArray(String[]::new),
                         (dialogInterface, which) -> {
                             taskList.get(position).setStageId(taskTypeList.get(which).getId());
-                            editTask(editRequest);
-
-                            ViewPager viewPager = ((MainActivity) context).findViewById(R.id.view_pager);
-                            Fragment taskChangedFragment = ((TasksTabbedAdapter) viewPager.getAdapter()).getFragmentByTitle(taskTypeList.get(which).getName());
-
-                            if(taskChangedFragment instanceof TasksRecyclerViewFragment) {
-                                ((TasksRecyclerViewFragment) taskChangedFragment).adapter.taskList.add(taskList.get(position));
-                                ((TasksRecyclerViewFragment) taskChangedFragment).adapter.notifyDataSetChanged();
-                            }
-
-                            taskList.remove(position);
-                            notifyItemRemoved(position);
+                            editTaskStage(editRequest, position, which, dialog);
                         });
                 builder.show();
             });
@@ -342,6 +331,43 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (!response.isSuccessful())
+                    Snackbar.make(((MainActivity) context).getCurrentFocus(), "Can't change task priority, please check internet connection!", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Snackbar.make(((MainActivity) context).getCurrentFocus(), "Ooops...", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
+    }
+
+    void editTaskStage(Call<ResponseBody> request, int position, int which, BottomSheetDialog dialog) {
+        request.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    ViewPager viewPager = ((MainActivity) context).findViewById(R.id.view_pager);
+                    TasksTabbedAdapter tabbedAdapter = ((TasksTabbedAdapter) viewPager.getAdapter());
+                    Fragment taskChangedFragment = tabbedAdapter.getFragmentByTitle(taskTypeList.get(which).getName());
+
+                    if (taskChangedFragment instanceof TasksRecyclerViewFragment) {
+                        if (((TasksRecyclerViewFragment) taskChangedFragment).adapter.taskList == null)
+                            ((TasksRecyclerViewFragment) taskChangedFragment).adapter.taskList = new ArrayList<>();
+
+                        ((TasksRecyclerViewFragment) taskChangedFragment).adapter.taskList.add(taskList.get(position));
+                        ((TasksRecyclerViewFragment) taskChangedFragment).adapter.notifyDataSetChanged();
+                    }
+
+                    viewPager.setCurrentItem(tabbedAdapter.getFragmentId(taskChangedFragment), true);
+
+                    taskList.remove(position);
+                    notifyItemRemoved(position);
+                    dialog.dismiss();
+                } else
                     Snackbar.make(((MainActivity) context).getCurrentFocus(), "Can't change task priority, please check internet connection!", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
 
