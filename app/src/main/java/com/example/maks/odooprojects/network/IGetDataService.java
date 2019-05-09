@@ -64,6 +64,13 @@ public interface IGetDataService {
             @Query("task_id") int taskId
     );
 
+    @POST("editprojecttask/")
+    Call<ResponseBody> editProjectTask(
+            @Header("Authorization") String token,
+            @Header("dbname") String dbname,
+            @Body ProjectTask projectTask
+    );
+
     @GET("gettaskbyid/")
     Call<ProjectTask> getTaskById(
             @Header("Authorization") String token,
