@@ -40,19 +40,10 @@ public class TasksRecyclerViewFragment extends Fragment {
 
     private ProgressDialog progressDialog;
     private List<ProjectTask> projectTasks;
+    TaskListAdapter adapter;
 
     public TasksRecyclerViewFragment() {
         // Required empty public constructor
-    }
-
-    public static TasksRecyclerViewFragment newInstance(int stageId, int projectId, String projectName) {
-        TasksRecyclerViewFragment tasksRecyclerViewFragment = new TasksRecyclerViewFragment();
-        Bundle args = new Bundle();
-        args.putInt("stage_id", stageId);
-        args.putInt("project_id", projectId);
-        args.putString("project_name", projectName);
-        tasksRecyclerViewFragment.setArguments(args);
-        return tasksRecyclerViewFragment;
     }
 
     public static TasksRecyclerViewFragment getInstance(int stageId) {
@@ -78,20 +69,6 @@ public class TasksRecyclerViewFragment extends Fragment {
 
         Bundle args = getArguments();
         int stageId = args.getInt("stage_id");
-        int projectId = args.getInt("project_id");
-        String projectName = args.getString("project_name");
-
-        FloatingActionButton fab = view.findViewById(R.id.add_project_task_fab);
-        fab.setOnClickListener(v -> {
-
-            CreateProjectTaskFragment createProjectTaskFragment = CreateProjectTaskFragment
-                    .newInstance(projectId, projectName);
-            getActivity().getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.content_frame, createProjectTaskFragment)
-                    .addToBackStack(null)
-                    .commit();
-        });
 
         if (getParentFragment() instanceof IGetProjectTasks) {
             IGetProjectTasks iGetProjectTasks = (IGetProjectTasks) getParentFragment();
@@ -127,6 +104,12 @@ public class TasksRecyclerViewFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        adapter.notifyDataSetChanged();
+    }
+
     @TargetApi(Build.VERSION_CODES.N)
     private void createRecyclerView(View view, int stageId) {
         RecyclerView recyclerView = view.findViewById(R.id.task_recycler_view);
@@ -134,7 +117,9 @@ public class TasksRecyclerViewFragment extends Fragment {
         List<ProjectTask> projectTasksByStage = projectTasks.stream()
                 .filter(t -> t.getStageId() == stageId)
                 .collect(Collectors.toList());
-        recyclerView.setAdapter(new TaskListAdapter(projectTasksByStage, getContext()));
+
+        adapter = new TaskListAdapter(projectTasksByStage, getContext());
+        recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
 }

@@ -15,17 +15,4 @@
         android:layout_margin="@dimen/cardview_compat_inset_shadow"
         tools:ignore="PrivateResource"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_project_task_fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/task_recycler_view"
-        app:layout_constraintEnd_toEndOf="@+id/task_recycler_view"
-        app:srcCompat="@drawable/ic_baseline_add_24px" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,6 +14,7 @@ import com.example.maks.odooprojects.models.ProjectTask;
 import com.example.maks.odooprojects.models.ProjectTaskType;
 import com.example.maks.odooprojects.network.IGetDataService;
 import com.example.maks.odooprojects.network.RetrofitClientInstance;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 
 import java.util.List;
@@ -39,6 +40,8 @@ public class TasksTabbedFragment extends Fragment
     private List<ProjectTaskType> projectTaskTypes;
     private IGetDataService service;
     private SharedPreferences sharedPreferences;
+    int projectId;
+    String projectName;
 
     public TasksTabbedFragment() {
         // Required empty public constructor
@@ -65,6 +68,22 @@ public class TasksTabbedFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
 
         ((AppCompatActivity)getActivity()).getSupportActionBar().setElevation(0);
+
+        projectId = getArguments().getInt("project_id");
+        projectName = getArguments().getString("project_name");
+
+        FloatingActionButton fab = view.findViewById(R.id.add_project_task_fab);
+        fab.setOnClickListener(v -> {
+
+            CreateProjectTaskFragment createProjectTaskFragment = CreateProjectTaskFragment
+                    .newInstance(projectId, projectName);
+            getActivity().getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.content_frame, createProjectTaskFragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Loading tasks...");
@@ -98,8 +117,6 @@ public class TasksTabbedFragment extends Fragment
 
     private void getTasks(View view){
 
-        int projectId = getArguments().getInt("project_id");
-        String projectName = getArguments().getString("project_name");
         Call<List<ProjectTask>> result = service.getProjectTasks(
                 sharedPreferences.getString("token", ""),
                 sharedPreferences.getString("db_name", ""),
@@ -122,7 +139,7 @@ public class TasksTabbedFragment extends Fragment
 
                 for(ProjectTaskType type : projectTaskTypes) {
                     TasksRecyclerViewFragment tasksRecyclerViewFragment = TasksRecyclerViewFragment
-                            .newInstance(type.getId(), projectId, projectName);
+                            .getInstance(type.getId());
                     adapter.addFragment(tasksRecyclerViewFragment, type.getName());
                 }
 
@@ -137,6 +154,12 @@ public class TasksTabbedFragment extends Fragment
                 Toast.makeText(getContext(), "Ooops...", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getTasks(getView());
     }
 
     @Override
