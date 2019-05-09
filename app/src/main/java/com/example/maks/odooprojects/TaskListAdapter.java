@@ -2,7 +2,6 @@ package com.example.maks.odooprojects;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +11,15 @@ import android.widget.TextView;
 
 import com.example.maks.odooprojects.models.Colors;
 import com.example.maks.odooprojects.models.ProjectTask;
+import com.example.maks.odooprojects.models.ProjectTaskType;
 import com.example.maks.odooprojects.network.IGetDataService;
 import com.example.maks.odooprojects.network.RetrofitClientInstance;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,6 +39,7 @@ import retrofit2.Response;
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHolder> {
 
     private List<ProjectTask> taskList;
+    private String[] taskTypeList;
     private final Context context;
     private final LayoutInflater inflater;
     private int i;
@@ -44,10 +47,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     IGetDataService service;
 
 
-    public TaskListAdapter(List<ProjectTask> taskList, Context context) {
+    public TaskListAdapter(List<ProjectTask> taskList, String[] taskTypesList, Context context) {
         this.taskList = taskList;
         this.context = context;
         this.inflater = LayoutInflater.from(context);
+        this.taskTypeList = taskTypesList;
     }
 
     @NonNull
@@ -67,6 +71,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         sharedPreferences = context.getSharedPreferences("AuthPref", Context.MODE_PRIVATE);
         service = RetrofitClientInstance.getRetrofitInstance().create(IGetDataService.class);
 
+        Call<ResponseBody> editRequest = service.editProjectTask(
+                sharedPreferences.getString("token", ""),
+                sharedPreferences.getString("db_name", ""),
+                taskList.get(position)
+        );
 
         if (projectTask.getDeadline() != null) {
             SimpleDateFormat fmt = new SimpleDateFormat("dd.MM.yyyy");
@@ -96,33 +105,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                 colorViewIdMap.put(colorView, i);
                 colorView.setOnClickListener(c -> {
                     taskList.get(position).setColor(colorViewIdMap.get(colorView));
-
-                    Call<ResponseBody> request = service.editProjectTask(
-                            sharedPreferences.getString("token", ""),
-                            sharedPreferences.getString("db_name", ""),
-                            taskList.get(position)
-                    );
-
-                    request.enqueue(new Callback<ResponseBody>() {
-                        @Override
-                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                            if (response.isSuccessful()) {
-                                notifyItemRangeChanged(position, taskList.size());
-                                dialog.dismiss();
-                            } else {
-                                Snackbar.make(((MainActivity) context).getCurrentFocus(), "Can't change task color, please check internet connection!", Snackbar.LENGTH_LONG)
-                                        .setAction("Action", null).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            Snackbar.make(((MainActivity) context).getCurrentFocus(), "Ooops...", Snackbar.LENGTH_LONG)
-                                    .setAction("Action", null).show();
-                        }
-                    });
-
+                    editTask(editRequest, position, dialog);
                 });
+
 
                 taskColors.addView(colorView);
             }
@@ -186,6 +171,50 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         else
             holder.taskPriority.setImageResource(R.drawable.ic_star_border);
 
+        holder.taskPriority.setOnClickListener(v -> {
+            if (projectTask.isPriority() == 0)
+                taskList.get(position).setIsPriority(1);
+            else
+                taskList.get(position).setIsPriority(0);
+
+            editTask(editRequest, position);
+        });
+
+        switch (projectTask.getKanbanState()) {
+            case "normal":
+                holder.taskProgress.setImageResource(R.drawable.ic_task_kanban_state_normal);
+                break;
+
+            case "done":
+                holder.taskProgress.setImageResource(R.drawable.ic_task_kanban_state_done);
+                break;
+
+            case "blocked":
+                holder.taskProgress.setImageResource(R.drawable.ic_task_kanban_state_blocked);
+                break;
+        }
+        holder.taskProgress.setOnClickListener(v -> {
+
+            String[] kanbanDialog = new String[taskTypeList.length - 1];
+            Map<String, String> kanban = new HashMap<>();
+            String[] states = {"normal", "done", "blocked"};
+            int counter = 0;
+            for (int k = 0; k < taskTypeList.length; ++k)
+                if (!states[k].equals(projectTask.getKanbanState())) {
+                    kanbanDialog[counter++] = taskTypeList[k];
+                    kanban.put(taskTypeList[k], states[k]);
+                }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setTitle("Task kanban state")
+                    .setItems(kanbanDialog,
+                            (dialogInterface, which) -> {
+                                projectTask.setKanbanState(kanban.get(kanbanDialog[which]));
+                                editTask(editRequest, position);
+                            });
+            builder.show();
+        });
+
         holder.itemView.setOnClickListener(v -> {
             TaskInfoFragment taskInfoFragment = TaskInfoFragment.newInstance(projectTask.getId());
             ((MainActivity) context).getSupportFragmentManager()
@@ -221,6 +250,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         ImageView taskPriority;
         ImageView taskSchedule;
         ImageView taskAssignedTo;
+        ImageView taskProgress;
         View taskColor;
         ImageView showModalSheet;
 
@@ -235,6 +265,51 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             taskAssignedTo = itemView.findViewById(R.id.task_assigned_to_iv);
             taskColor = itemView.findViewById(R.id.task_color_v);
             showModalSheet = itemView.findViewById(R.id.show_task_modal_sheet);
+            taskProgress = itemView.findViewById(R.id.task_progress_iv);
         }
+    }
+
+    void editTask(Call<ResponseBody> request, int position, BottomSheetDialog dialog) {
+
+        request.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    notifyItemRangeChanged(position, taskList.size());
+                    dialog.dismiss();
+                } else {
+                    Snackbar.make(((MainActivity) context).getCurrentFocus(), "Can't change task color, please check internet connection!", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Snackbar.make(((MainActivity) context).getCurrentFocus(), "Ooops...", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
+    }
+
+    void editTask(Call<ResponseBody> request, int position) {
+        request.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    notifyItemRangeChanged(position, taskList.size());
+                } else {
+                    Snackbar.make(((MainActivity) context).getCurrentFocus(), "Can't change task priority, please check internet connection!", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Snackbar.make(((MainActivity) context).getCurrentFocus(), "Ooops...", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
     }
 }

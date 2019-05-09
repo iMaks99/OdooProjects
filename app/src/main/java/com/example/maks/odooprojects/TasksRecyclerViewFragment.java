@@ -7,26 +7,23 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
-import com.example.maks.odooprojects.models.ProjectTask;
-import com.example.maks.odooprojects.network.IGetDataService;
-import com.example.maks.odooprojects.network.RetrofitClientInstance;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.maks.odooprojects.models.ProjectTask;
+import com.example.maks.odooprojects.network.IGetDataService;
+import com.example.maks.odooprojects.network.RetrofitClientInstance;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -46,10 +43,16 @@ public class TasksRecyclerViewFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static TasksRecyclerViewFragment getInstance(int stageId) {
+    public static TasksRecyclerViewFragment getInstance(int stageId,
+                                                        String kanbanNormal,
+                                                        String kanbanDone,
+                                                        String kanbanBlocked) {
         TasksRecyclerViewFragment tasksRecyclerViewFragment = new TasksRecyclerViewFragment();
         Bundle args = new Bundle();
         args.putInt("stage_id", stageId);
+        args.putString("kanban_normal", kanbanNormal);
+        args.putString("kanban_done", kanbanDone);
+        args.putString("kanban_blocked", kanbanBlocked);
         tasksRecyclerViewFragment.setArguments(args);
         return tasksRecyclerViewFragment;
     }
@@ -118,7 +121,13 @@ public class TasksRecyclerViewFragment extends Fragment {
                 .filter(t -> t.getStageId() == stageId)
                 .collect(Collectors.toList());
 
-        adapter = new TaskListAdapter(projectTasksByStage, getContext());
+        adapter = new TaskListAdapter(projectTasksByStage,
+                new String[] {
+                        getArguments().getString("kanban_normal"),
+                        getArguments().getString("kanban_done"),
+                        getArguments().getString("kanban_blocked")},
+                getContext());
+
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
