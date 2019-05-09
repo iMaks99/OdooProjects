@@ -2,7 +2,7 @@ package com.example.maks.odooprojects.models;
 
 public class Colors {
 
-    private static int colorId[] = {
+    private static int[] colorId = {
             0xFFFFFFFF,
             0xFFEF6050,
             0xFFF3A360,
@@ -20,5 +20,9 @@ public class Colors {
 
     public static int getColor(int id) {
         return colorId[id];
+    }
+
+    public static int[] getColors() {
+        return colorId;
     }
 }

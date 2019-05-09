@@ -11,10 +11,9 @@
         android:layout_width="wrap_content"
         android:layout_height="28dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/project_task_delete_tv"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/projcet_task_edit_tv"
+        app:layout_constraintTop_toTopOf="@+id/project_task_delete_tv"
         app:srcCompat="@drawable/ic_baseline_sentiment_very_satisfied_24px" />
 
     <ImageView
@@ -22,20 +21,23 @@
         android:layout_width="wrap_content"
         android:layout_height="28dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/projcet_task_edit_tv"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/project_task_share_tv"
+        app:layout_constraintTop_toTopOf="@+id/projcet_task_edit_tv"
         app:srcCompat="@drawable/ic_baseline_sentiment_very_satisfied_24px" />
 
     <TextView
         android:id="@+id/project_task_share_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
         android:text="Share Task"
         android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
         app:layout_constraintTop_toBottomOf="@+id/project_task_set_cover_image_tv" />
 
@@ -43,10 +45,15 @@
         android:id="@+id/project_task_set_cover_image_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="16dp"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
         android:text="Set Cover Image"
         android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView4"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -54,10 +61,14 @@
         android:id="@+id/project_task_delete_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
         android:text="Delete Task"
         android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView3"
         app:layout_constraintTop_toBottomOf="@+id/projcet_task_edit_tv" />
 
@@ -65,10 +76,14 @@
         android:id="@+id/projcet_task_edit_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:paddingStart="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
         android:text="Edit Task"
         android:textSize="22sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView3"
         app:layout_constraintTop_toBottomOf="@+id/project_task_share_tv" />
 
@@ -77,10 +92,9 @@
         android:layout_width="wrap_content"
         android:layout_height="28dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="@+id/project_task_share_tv"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/project_task_set_cover_image_tv"
+        app:layout_constraintTop_toTopOf="@+id/project_task_share_tv"
         app:srcCompat="@drawable/ic_baseline_sentiment_very_satisfied_24px" />
 
     <ImageView
@@ -88,10 +102,9 @@
         android:layout_width="wrap_content"
         android:layout_height="28dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
         app:layout_constraintBottom_toBottomOf="@+id/project_task_set_cover_image_tv"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/project_task_set_cover_image_tv"
         app:srcCompat="@drawable/ic_baseline_sentiment_very_satisfied_24px" />
 
     <HorizontalScrollView
@@ -103,95 +116,10 @@
         app:layout_constraintTop_toBottomOf="@+id/project_task_delete_tv">
 
         <LinearLayout
+            android:id="@+id/task_colors_ll"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingBottom="16dp"
-            android:orientation="horizontal">
-
-            <View
-                android:id="@+id/view6"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="4dp"
-                android:background="#050861" />
-
-            <View
-                android:id="@+id/view11"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="4dp"
-                android:background="#2196F3" />
-
-            <View
-                android:id="@+id/view12"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="4dp"
-                android:background="#8BC34A" />
-
-            <View
-                android:id="@+id/view13"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="4dp"
-                android:background="#8BC34A" />
-
-            <View
-                android:id="@+id/view14"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-
-                android:layout_marginEnd="4dp"
-                android:background="#00861F" />
-
-            <View
-                android:id="@+id/view9"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-
-                android:layout_marginEnd="4dp"
-                android:background="#001F1F" />
-
-            <View
-                android:id="@+id/view10"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-
-                android:layout_marginEnd="4dp"
-                android:background="#00861F" />
-
-            <View
-                android:id="@+id/view7"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-
-                android:layout_marginEnd="4dp"
-                android:background="#861F1F" />
-
-            <View
-                android:id="@+id/view8"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-
-                android:layout_marginEnd="4dp"
-                android:background="#00861F" />
-
-            <View
-                android:id="@+id/view5"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-
-                android:layout_marginEnd="4dp"
-                android:background="#008F1F" />
-
-            <View
-                android:id="@+id/view4"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-
-                android:background="#041F1F" />
-
-        </LinearLayout>
+            android:orientation="horizontal" />
 
     </HorizontalScrollView>
 
