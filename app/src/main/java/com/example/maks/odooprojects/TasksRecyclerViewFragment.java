@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.maks.odooprojects.models.ProjectTask;
+import com.example.maks.odooprojects.models.ProjectTaskType;
 import com.example.maks.odooprojects.network.IGetDataService;
 import com.example.maks.odooprojects.network.RetrofitClientInstance;
 
@@ -37,22 +38,17 @@ public class TasksRecyclerViewFragment extends Fragment {
 
     private ProgressDialog progressDialog;
     private List<ProjectTask> projectTasks;
-    TaskListAdapter adapter;
+    private List<ProjectTaskType> projectTasksTypes;
+    private TaskListAdapter adapter;
 
     public TasksRecyclerViewFragment() {
         // Required empty public constructor
     }
 
-    public static TasksRecyclerViewFragment getInstance(int stageId,
-                                                        String kanbanNormal,
-                                                        String kanbanDone,
-                                                        String kanbanBlocked) {
+    public static TasksRecyclerViewFragment getInstance(int stageId) {
         TasksRecyclerViewFragment tasksRecyclerViewFragment = new TasksRecyclerViewFragment();
         Bundle args = new Bundle();
         args.putInt("stage_id", stageId);
-        args.putString("kanban_normal", kanbanNormal);
-        args.putString("kanban_done", kanbanDone);
-        args.putString("kanban_blocked", kanbanBlocked);
         tasksRecyclerViewFragment.setArguments(args);
         return tasksRecyclerViewFragment;
     }
@@ -76,6 +72,7 @@ public class TasksRecyclerViewFragment extends Fragment {
         if (getParentFragment() instanceof IGetProjectTasks) {
             IGetProjectTasks iGetProjectTasks = (IGetProjectTasks) getParentFragment();
             projectTasks = iGetProjectTasks.returnProjectTask();
+            projectTasksTypes = iGetProjectTasks.returnProjectTaskType();
             createRecyclerView(view, stageId);
         } else {
 
@@ -121,11 +118,7 @@ public class TasksRecyclerViewFragment extends Fragment {
                 .filter(t -> t.getStageId() == stageId)
                 .collect(Collectors.toList());
 
-        adapter = new TaskListAdapter(projectTasksByStage,
-                new String[] {
-                        getArguments().getString("kanban_normal"),
-                        getArguments().getString("kanban_done"),
-                        getArguments().getString("kanban_blocked")},
+        adapter = new TaskListAdapter(projectTasksByStage, stageId, projectTasksTypes,
                 getContext());
 
         recyclerView.setAdapter(adapter);

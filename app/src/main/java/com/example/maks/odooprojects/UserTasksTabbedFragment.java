@@ -115,10 +115,7 @@ public class UserTasksTabbedFragment extends Fragment
                 TasksTabbedAdapter adapter = new TasksTabbedAdapter(getChildFragmentManager());
 
                 for (ProjectTaskType type : projectTaskTypes) {
-                    TasksRecyclerViewFragment tasksRecyclerViewFragment = TasksRecyclerViewFragment.getInstance(type.getId(),
-                            type.getLegendNormal(),
-                            type.getLegendNormal(),
-                            type.getLegendBlocked());
+                    TasksRecyclerViewFragment tasksRecyclerViewFragment = TasksRecyclerViewFragment.getInstance(type.getId());
                     adapter.addFragment(tasksRecyclerViewFragment, type.getName());
                 }
 
@@ -138,5 +135,10 @@ public class UserTasksTabbedFragment extends Fragment
     @Override
     public List<ProjectTask> returnProjectTask() {
         return projectTaskList;
+    }
+
+    @Override
+    public List<ProjectTaskType> returnProjectTaskType() {
+        return projectTaskTypes;
     }
 }

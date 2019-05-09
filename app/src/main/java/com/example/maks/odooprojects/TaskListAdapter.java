@@ -39,7 +39,8 @@ import retrofit2.Response;
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHolder> {
 
     private List<ProjectTask> taskList;
-    private String[] taskTypeList;
+    private List<ProjectTaskType> taskTypeList;
+    private int stageId;
     private final Context context;
     private final LayoutInflater inflater;
     private int i;
@@ -47,11 +48,12 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
     IGetDataService service;
 
 
-    public TaskListAdapter(List<ProjectTask> taskList, String[] taskTypesList, Context context) {
+    public TaskListAdapter(List<ProjectTask> taskList, int stageId, List<ProjectTaskType> taskTypesList, Context context) {
         this.taskList = taskList;
         this.context = context;
         this.inflater = LayoutInflater.from(context);
         this.taskTypeList = taskTypesList;
+        this.stageId = stageId;
     }
 
     @NonNull
@@ -195,19 +197,34 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
         }
         holder.taskProgress.setOnClickListener(v -> {
 
-            String[] kanbanDialog = new String[taskTypeList.length - 1];
+            String[] kanbanDialog = new String[2];
             Map<String, String> kanban = new HashMap<>();
-            String[] states = {"normal", "done", "blocked"};
-            int counter = 0;
-            for (int k = 0; k < taskTypeList.length; ++k)
-                if (!states[k].equals(projectTask.getKanbanState())) {
-                    kanbanDialog[counter++] = taskTypeList[k];
-                    kanban.put(taskTypeList[k], states[k]);
-                }
+
+            switch (projectTask.getKanbanState()) {
+                case "normal":
+                    kanbanDialog[0] = taskTypeList.get(stageId).getLegendDone();
+                    kanbanDialog[1] = taskTypeList.get(stageId).getLegendBlocked();
+                    kanban.put(kanbanDialog[0], "done");
+                    kanban.put(kanbanDialog[1], "blocked");
+                    break;
+
+                case "done":
+                    kanbanDialog[0] = taskTypeList.get(stageId).getLegendNormal();
+                    kanbanDialog[1] = taskTypeList.get(stageId).getLegendBlocked();
+                    kanban.put(kanbanDialog[0], "normal");
+                    kanban.put(kanbanDialog[1], "blocked");
+                    break;
+
+                case "blocked":
+                    kanbanDialog[0] = taskTypeList.get(stageId).getLegendDone();
+                    kanbanDialog[1] = taskTypeList.get(stageId).getLegendNormal();
+                    kanban.put(kanbanDialog[0], "done");
+                    kanban.put(kanbanDialog[1], "normal");
+                    break;
+            }
 
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Task kanban state")
-                    .setItems(kanbanDialog,
+            builder.setItems(kanbanDialog,
                             (dialogInterface, which) -> {
                                 projectTask.setKanbanState(kanban.get(kanbanDialog[which]));
                                 editTask(editRequest, position);
