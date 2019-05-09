@@ -17,7 +17,9 @@ import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 
@@ -37,7 +39,7 @@ public class UserTasksTabbedFragment extends Fragment
         implements IGetProjectTasks {
 
     ProgressDialog progressDialog;
-    private List<ProjectTask> projectTaskList;
+    List<ProjectTask> projectTaskList;
     private List<ProjectTaskType> projectTaskTypes;
     private IGetDataService service;
     private SharedPreferences sharedPreferences;

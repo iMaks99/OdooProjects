@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,8 +29,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -92,6 +95,29 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             View view = inflater.inflate(R.layout.fragment_task_modal_bottom_sheet, null);
             BottomSheetDialog dialog = new BottomSheetDialog(context);
             dialog.setContentView(view);
+
+            TextView changeKanbanState = view.findViewById(R.id.project_task_change_kanban_state_tv);
+            changeKanbanState.setOnClickListener(k -> {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setItems(taskTypeList.stream().map(s -> s.getName()).toArray(String[]::new),
+                        (dialogInterface, which) -> {
+                            taskList.get(position).setStageId(taskTypeList.get(which).getId());
+                            editTask(editRequest);
+
+                            ViewPager viewPager = ((MainActivity) context).findViewById(R.id.view_pager);
+                            Fragment taskChangedFragment = ((TasksTabbedAdapter) viewPager.getAdapter()).getFragmentByTitle(taskTypeList.get(which).getName());
+
+                            if(taskChangedFragment instanceof TasksRecyclerViewFragment) {
+                                ((TasksRecyclerViewFragment) taskChangedFragment).adapter.taskList.add(taskList.get(position));
+                                ((TasksRecyclerViewFragment) taskChangedFragment).adapter.notifyDataSetChanged();
+                            }
+
+                            taskList.remove(position);
+                            notifyItemRemoved(position);
+                        });
+                builder.show();
+            });
 
             LinearLayout taskColors = view.findViewById(R.id.task_colors_ll);
             Map<View, Integer> colorViewIdMap = new HashMap<>();
@@ -179,7 +205,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             else
                 taskList.get(position).setIsPriority(0);
 
-            editTask(editRequest, position);
+            editTask(editRequest);
+            notifyItemRangeChanged(position, taskList.size());
         });
 
         switch (projectTask.getKanbanState()) {
@@ -225,10 +252,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
             AlertDialog.Builder builder = new AlertDialog.Builder(context);
             builder.setItems(kanbanDialog,
-                            (dialogInterface, which) -> {
-                                projectTask.setKanbanState(kanban.get(kanbanDialog[which]));
-                                editTask(editRequest, position);
-                            });
+                    (dialogInterface, which) -> {
+                        projectTask.setKanbanState(kanban.get(kanbanDialog[which]));
+                        editTask(editRequest);
+                        notifyItemRangeChanged(position, taskList.size());
+                    });
             builder.show();
         });
 
@@ -309,16 +337,14 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
 
     }
 
-    void editTask(Call<ResponseBody> request, int position) {
+    void editTask(Call<ResponseBody> request) {
         request.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                    notifyItemRangeChanged(position, taskList.size());
-                } else {
+                if (!response.isSuccessful())
                     Snackbar.make(((MainActivity) context).getCurrentFocus(), "Can't change task priority, please check internet connection!", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
-                }
+
             }
 
             @Override

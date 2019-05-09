@@ -39,7 +39,7 @@ public class TasksRecyclerViewFragment extends Fragment {
     private ProgressDialog progressDialog;
     private List<ProjectTask> projectTasks;
     private List<ProjectTaskType> projectTasksTypes;
-    private TaskListAdapter adapter;
+    TaskListAdapter adapter;
 
     public TasksRecyclerViewFragment() {
         // Required empty public constructor

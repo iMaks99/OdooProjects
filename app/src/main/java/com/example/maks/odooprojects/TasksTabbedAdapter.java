@@ -28,6 +28,10 @@ public class TasksTabbedAdapter extends FragmentStatePagerAdapter {
         mFragmentTitleList.add(title);
     }
 
+    public Fragment getFragmentByTitle(String title) {
+        return mFragmentList.get(mFragmentTitleList.indexOf(title));
+    }
+
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {

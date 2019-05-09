@@ -39,10 +39,10 @@
         android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toBottomOf="@+id/project_task_set_cover_image_tv" />
+        app:layout_constraintTop_toBottomOf="@+id/project_task_change_kanban_state_tv" />
 
     <TextView
-        android:id="@+id/project_task_set_cover_image_tv"
+        android:id="@+id/project_task_change_kanban_state_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -51,7 +51,7 @@
         android:paddingStart="8dp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:text="Set Cover Image"
+        android:text="Change Kanban State"
         android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView4"
@@ -102,9 +102,9 @@
         android:layout_width="wrap_content"
         android:layout_height="28dp"
         android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/project_task_set_cover_image_tv"
+        app:layout_constraintBottom_toBottomOf="@+id/project_task_change_kanban_state_tv"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/project_task_set_cover_image_tv"
+        app:layout_constraintTop_toTopOf="@+id/project_task_change_kanban_state_tv"
         app:srcCompat="@drawable/ic_baseline_sentiment_very_satisfied_24px" />
 
     <HorizontalScrollView
