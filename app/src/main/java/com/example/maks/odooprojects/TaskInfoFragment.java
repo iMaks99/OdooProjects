@@ -16,6 +16,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 
@@ -77,8 +79,6 @@ public class TaskInfoFragment extends Fragment {
         mActionBar.setDisplayShowCustomEnabled(true);
         LayoutInflater mInflater = LayoutInflater.from(getContext());
 
-
-        
         View mCustomView = mInflater.inflate(R.layout.task_info_action_bar, null);
         TextView fragmentTitle = mCustomView.findViewById(R.id.task_info_title);
         ImageView openTaskBottomSheet = mCustomView.findViewById(R.id.open_task_bottom_sheet);
@@ -136,20 +136,34 @@ public class TaskInfoFragment extends Fragment {
 
                 if (task.getDescription() != null)
                     taskDescription.setText(HtmlCompat.fromHtml(task.getDescription(), HtmlCompat.FROM_HTML_MODE_LEGACY));
+                else
+                    taskDescription.setVisibility(View.GONE);
 
                 if (task.isPriority() == 1)
                     taskPriority.setImageResource(R.drawable.ic_star_filled);
                 else
                     taskPriority.setImageResource(R.drawable.ic_star_border);
 
-                if (task.getTags() != null) {
+                ConstraintLayout constraintLayout = view.findViewById(R.id.task_info_constraint_layout);
+                ConstraintSet constraintSet = new ConstraintSet();
+                constraintSet.clone(constraintLayout);
+
+                float scale = getContext().getResources().getDisplayMetrics().density;
+                int pixels = (int) (12 * scale + 0.5f);
+
+                if (task.getTags().size() != 0) {
+
+                    constraintSet.connect(R.id.task_info_description , ConstraintSet.TOP, R.id.task_info_tags_chg ,ConstraintSet.BOTTOM,pixels);
                     for (ProjectTaskTag t : task.getTags()) {
                         View v = LayoutInflater.from(getContext()).inflate(R.layout.task_tag_chip, taskTags, false);
                         Chip tag = v.findViewById(R.id.chips_task_tag);
                         tag.setText(t.getName());
                         taskTags.addView(tag);
                     }
+                } else {
+                    constraintSet.connect(R.id.task_info_description, ConstraintSet.TOP, R.id.task_info_tags, ConstraintSet.BOTTOM,pixels);
                 }
+                constraintSet.applyTo(constraintLayout);
 
                 if (task.getCustomerDisplayName() != null)
                     taskCustomerName.setText(task.getCustomerDisplayName());

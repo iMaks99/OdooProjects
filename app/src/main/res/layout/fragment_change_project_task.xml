@@ -26,9 +26,10 @@
 
     <ImageView
         android:id="@+id/new_project_task_priority_iv"
-        android:layout_width="26dp"
-        android:layout_height="26dp"
-        android:layout_marginStart="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:padding="4dp"
         android:src="@drawable/ic_star_border"
         app:layout_constraintBottom_toBottomOf="@+id/new_project_task_name_ev"
         app:layout_constraintStart_toStartOf="parent"
