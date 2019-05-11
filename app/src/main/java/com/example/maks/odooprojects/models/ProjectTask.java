@@ -28,6 +28,8 @@ public class ProjectTask {
     private int stageId;
     @SerializedName("description")
     private String description;
+    @SerializedName("project_id")
+    private int projectId;
     @SerializedName("project_name")
     private String projectName;
     @SerializedName("planned_hours")
@@ -46,7 +48,7 @@ public class ProjectTask {
 
     public ProjectTask(int id, String name, String customerName, Date deadline, int isPriority,
                        String kanbanState, int customerId, String customerEmail, int mailActivityState, int stageId, String description,
-                       String projectName, int plannedHours, String assignedTo, int assignedToId, List<ProjectTaskTag> tags,
+                       int projectId, String projectName, int plannedHours, String assignedTo, int assignedToId, List<ProjectTaskTag> tags,
                        int color) {
         this.id = id;
         this.name = name;
@@ -59,6 +61,7 @@ public class ProjectTask {
         this.mailActivityState = mailActivityState;
         this.stageId = stageId;
         this.description = description;
+        this.projectId = projectId;
         this.projectName = projectName;
         this.plannedHours = plannedHours;
         this.assignedTo = assignedTo;
@@ -202,6 +205,10 @@ public class ProjectTask {
 
     public String getCustomerEmail() {
         return customerEmail;
+    }
+
+    public int getProjectId() {
+        return projectId;
     }
 }
 

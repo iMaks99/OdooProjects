@@ -5,11 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -19,19 +15,24 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.maks.odooprojects.models.ProjectTask;
 import com.example.maks.odooprojects.models.ProjectTaskTag;
+import com.example.maks.odooprojects.models.ProjectTaskType;
 import com.example.maks.odooprojects.network.IGetDataService;
 import com.example.maks.odooprojects.network.RetrofitClientInstance;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
+import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -43,14 +44,16 @@ import retrofit2.Response;
 public class TaskInfoFragment extends Fragment {
 
     ProgressDialog progressDialog;
+    List<ProjectTaskType> taskTypeList;
+    ProjectTask task;
 
     public TaskInfoFragment() {
         // Required empty public constructor
     }
 
-    public static TaskInfoFragment newInstance(int id) {
+    public static TaskInfoFragment newInstance(int taskId) {
         Bundle args = new Bundle();
-        args.putInt("task_id", id);
+        args.putInt("task_id", taskId);
         TaskInfoFragment taskInfoFragment = new TaskInfoFragment();
         taskInfoFragment.setArguments(args);
         return taskInfoFragment;
@@ -74,13 +77,11 @@ public class TaskInfoFragment extends Fragment {
         mActionBar.setDisplayShowCustomEnabled(true);
         LayoutInflater mInflater = LayoutInflater.from(getContext());
 
+
+        
         View mCustomView = mInflater.inflate(R.layout.task_info_action_bar, null);
         TextView fragmentTitle = mCustomView.findViewById(R.id.task_info_title);
         ImageView openTaskBottomSheet = mCustomView.findViewById(R.id.open_task_bottom_sheet);
-        openTaskBottomSheet.setOnClickListener(v -> {
-            Snackbar.make(getActivity().findViewById(R.id.content_frame), "Bottom sheet opened!", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show();
-        });
 
         mActionBar.setCustomView(mCustomView);
 
@@ -114,9 +115,9 @@ public class TaskInfoFragment extends Fragment {
             @Override
             public void onResponse(Call<ProjectTask> call, Response<ProjectTask> response) {
                 progressDialog.dismiss();
-                ProjectTask task = response.body();
+                task = response.body();
 
-
+                getTaskStages(service, sharedPreferences);
                 if (task.getName() != null) {
                     taskName.setText(task.getName());
                     fragmentTitle.setText(task.getName());
@@ -155,6 +156,76 @@ public class TaskInfoFragment extends Fragment {
 
                 if (task.getCustomerEmail() != null)
                     taskCustomerEmail.setText(task.getCustomerEmail());
+
+                openTaskBottomSheet.setOnClickListener(v -> {
+                    View bottomSheetView = getLayoutInflater().inflate(R.layout.fragment_task_info_modal_bottom_sheet, null);
+                    BottomSheetDialog dialog = new BottomSheetDialog(getContext());
+                    dialog.setContentView(bottomSheetView);
+
+                    TextView changeKanbanState = bottomSheetView.findViewById(R.id.project_task_change_kanban_state_tv);
+                    changeKanbanState.setOnClickListener(k -> {
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setItems(taskTypeList.stream().map(s -> s.getName()).toArray(String[]::new),
+                                (dialogInterface, which) -> {
+                                    task.setStageId(taskTypeList.get(which).getId());
+                                    editTaskStage(service, sharedPreferences, dialog);
+                                });
+                        builder.show();
+                    });
+
+                    TextView editTask = bottomSheetView.findViewById(R.id.projcet_task_edit_tv);
+                    editTask.setOnClickListener(e -> {
+                        EditProjectTaskFragment editProjectTaskFragment = EditProjectTaskFragment.newInstance(task.getId());
+                        ((MainActivity) getContext()).getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.content_frame, editProjectTaskFragment)
+                                .addToBackStack(null)
+                                .commit();
+                        dialog.dismiss();
+                    });
+
+                    TextView deleteTask = bottomSheetView.findViewById(R.id.project_task_delete_tv);
+                    deleteTask.setOnClickListener(d -> {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                        builder.setTitle("Confirmaion")
+                                .setMessage("Are you sure you want to delete this record ?")
+                                .setPositiveButton("Ok", (deleteDialog, id) -> {
+
+                                    Call<ResponseBody> request = service.deleteProjectTask(
+                                            sharedPreferences.getString("token", ""),
+                                            sharedPreferences.getString("db_name", ""),
+                                            task.getId()
+                                    );
+
+                                    request.enqueue(new Callback<ResponseBody>() {
+                                        @Override
+                                        public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                            dialog.dismiss();
+                                            if (response.isSuccessful()) {
+                                                Snackbar.make(((MainActivity) getContext()).getCurrentFocus(), "Task successfully deleted!", Snackbar.LENGTH_LONG)
+                                                        .setAction("Action", null).show();
+                                            } else {
+                                                Snackbar.make(((MainActivity) getContext()).getCurrentFocus(), "Task does not deleted!", Snackbar.LENGTH_LONG)
+                                                        .setAction("Action", null).show();
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                            dialog.dismiss();
+                                            Snackbar.make(((MainActivity) getContext()).getCurrentFocus(), "Ooops...", Snackbar.LENGTH_LONG)
+                                                    .setAction("Action", null).show();
+                                        }
+                                    });
+                                })
+                                .setNegativeButton("Cancel", (deleteDialog, id) -> deleteDialog.cancel());
+                        builder.show();
+                    });
+
+                    dialog.show();
+                });
+
             }
 
             @Override
@@ -163,5 +234,53 @@ public class TaskInfoFragment extends Fragment {
                 Toast.makeText(getContext(), "Ooops...", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    void getTaskStages (IGetDataService service, SharedPreferences sharedPreferences){
+        Call<List<ProjectTaskType>> stages = service.getProjectTaskStages(
+                sharedPreferences.getString("token", ""),
+                sharedPreferences.getString("db_name", ""),
+                task.getProjectId()
+        );
+
+        stages.enqueue(new Callback<List<ProjectTaskType>>() {
+            @Override
+            public void onResponse(Call<List<ProjectTaskType>> call, Response<List<ProjectTaskType>> response) {
+                taskTypeList = response.body();
+            }
+
+            @Override
+            public void onFailure(Call<List<ProjectTaskType>> call, Throwable t) {
+                Toast.makeText(getContext(), "Ooops...", Toast.LENGTH_SHORT).show();
+                progressDialog.dismiss();
+            }
+        });
+    }
+
+    void editTaskStage(IGetDataService service, SharedPreferences sharedPreferences, BottomSheetDialog dialog) {
+
+        Call<ResponseBody> request = service.editProjectTask(
+                sharedPreferences.getString("token", ""),
+                sharedPreferences.getString("db_name", ""),
+                task
+        );
+
+        request.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    dialog.dismiss();
+                } else
+                    Snackbar.make(((MainActivity) getContext()).getCurrentFocus(), "Can't change task stage, please check internet connection!", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Snackbar.make(((MainActivity) getContext()).getCurrentFocus(), "Ooops...", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+
     }
 }
