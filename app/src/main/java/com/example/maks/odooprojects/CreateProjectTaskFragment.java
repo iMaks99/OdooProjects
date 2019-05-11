@@ -80,6 +80,8 @@ public class CreateProjectTaskFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        ((MainActivity) getActivity()).setToolbarTitleEnabled("Creating task");
+
         Bundle args = getArguments();
         int projectId = args.getInt("project_id");
         String projectName = args.getString("project_name");

@@ -190,4 +190,15 @@ public class MainActivity extends AppCompatActivity implements
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
     }
+
+    public void setToolbarTitleEnabled(String title) {
+        getSupportActionBar().setDisplayShowCustomEnabled(false);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
+        getSupportActionBar().setTitle(title);
+    }
+
+    public void setCustomToolbarEnabled() {
+        getSupportActionBar().setDisplayShowCustomEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+    }
 }

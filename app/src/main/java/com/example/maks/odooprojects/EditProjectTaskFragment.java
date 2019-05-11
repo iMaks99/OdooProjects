@@ -80,6 +80,8 @@ public class EditProjectTaskFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         ((MainActivity) getActivity()).createBackButton();
+        ((MainActivity) getActivity()).setToolbarTitleEnabled("Editing task");
+
 
         Bundle args = getArguments();
         int task_id = args.getInt("task_id");

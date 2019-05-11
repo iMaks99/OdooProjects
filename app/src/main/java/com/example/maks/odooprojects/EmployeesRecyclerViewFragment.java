@@ -59,6 +59,8 @@ public class EmployeesRecyclerViewFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         ((MainActivity) getActivity()).crateMenuButton();
+        ((MainActivity) getActivity()).setToolbarTitleEnabled("Employees");
+
 
         Bundle args = getArguments();
         int departmentId = args.getInt("department_id");

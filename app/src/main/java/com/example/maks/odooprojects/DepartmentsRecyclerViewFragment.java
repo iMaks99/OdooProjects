@@ -47,7 +47,7 @@ public class DepartmentsRecyclerViewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getActivity().setTitle(R.string.departments_title);
+        ((MainActivity) getActivity()).setToolbarTitleEnabled("Departments");
         ((MainActivity) getActivity()).crateMenuButton();
 
         progressDialog = new ProgressDialog(getContext());
