@@ -86,8 +86,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             SimpleDateFormat fmt = new SimpleDateFormat("dd.MM.yyyy");
             holder.taskDeadline.setText(fmt.format(projectTask.getDeadline()));
         }
-        if (projectTask.getEmailFrom() != null)
-            holder.taskEmailFrom.setText(projectTask.getEmailFrom());
+        if (projectTask.getCustomerEmail() != null)
+            holder.taskEmailFrom.setText(projectTask.getCustomerEmail());
 
         holder.taskColor.setBackgroundColor(Colors.getColor(projectTask.getColor()));
 

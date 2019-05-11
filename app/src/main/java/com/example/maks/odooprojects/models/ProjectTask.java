@@ -12,8 +12,12 @@ public class ProjectTask {
     private String name;
     @SerializedName("kanban_state")
     private String kanbanState;
-    @SerializedName("email_from")
-    private String emailFrom;
+    @SerializedName("customer_id")
+    private int customerId;
+    @SerializedName("customer_display_name")
+    private String customerDisplayName;
+    @SerializedName("customer_email")
+    private String customerEmail;
     @SerializedName("priority")
     private int isPriority;
     @SerializedName("date_deadline")
@@ -37,16 +41,19 @@ public class ProjectTask {
     @SerializedName("color")
     private int color;
 
-    public ProjectTask(){}
+    public ProjectTask() {
+    }
 
-    public ProjectTask(int id, String name, Date deadline, String emailFrom, int isPriority,
-                       String kanbanState, int mailActivityState, int stageId, String description,
+    public ProjectTask(int id, String name, String customerName, Date deadline, int isPriority,
+                       String kanbanState, int customerId, String customerEmail, int mailActivityState, int stageId, String description,
                        String projectName, int plannedHours, String assignedTo, int assignedToId, List<ProjectTaskTag> tags,
                        int color) {
         this.id = id;
         this.name = name;
+        this.customerDisplayName = customerName;
         this.deadline = deadline;
-        this.emailFrom = emailFrom;
+        this.customerId = customerId;
+        this.customerEmail = customerEmail;
         this.isPriority = isPriority;
         this.kanbanState = kanbanState;
         this.mailActivityState = mailActivityState;
@@ -72,9 +79,6 @@ public class ProjectTask {
         this.kanbanState = kanbanState;
     }
 
-    public void setEmailFrom(String emailFrom) {
-        this.emailFrom = emailFrom;
-    }
 
     public void setIsPriority(int isPriority) {
         this.isPriority = isPriority;
@@ -120,6 +124,18 @@ public class ProjectTask {
         this.color = color;
     }
 
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
+    }
+
+    public void setCustomerDisplayName(String customerDisplayName) {
+        this.customerDisplayName = customerDisplayName;
+    }
+
+    public void setCustomerEmail(String customerEmail) {
+        this.customerEmail = customerEmail;
+    }
+
     public int getId() {
         return id;
     }
@@ -130,10 +146,6 @@ public class ProjectTask {
 
     public Date getDeadline() {
         return deadline;
-    }
-
-    public String getEmailFrom() {
-        return emailFrom;
     }
 
     public int isPriority() {
@@ -178,6 +190,18 @@ public class ProjectTask {
 
     public int getAssignedToId() {
         return assignedToId;
+    }
+
+    public int getCustomerId() {
+        return customerId;
+    }
+
+    public String getCustomerDisplayName() {
+        return customerDisplayName;
+    }
+
+    public String getCustomerEmail() {
+        return customerEmail;
     }
 }
 

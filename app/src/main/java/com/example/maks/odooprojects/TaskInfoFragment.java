@@ -94,6 +94,8 @@ public class TaskInfoFragment extends Fragment {
         TextView taskDeadline = view.findViewById(R.id.task_info_deadline_tv);
         ImageView taskPriority = view.findViewById(R.id.task_info_priority_iv);
         ChipGroup taskTags = view.findViewById(R.id.task_info_tags_chg);
+        TextView taskCustomerName = view.findViewById(R.id.task_customer_name_tv);
+        TextView taskCustomerEmail = view.findViewById(R.id.task_customer_mail_tv);
 
         request.enqueue(new Callback<ProjectTask>() {
             @Override
@@ -133,6 +135,12 @@ public class TaskInfoFragment extends Fragment {
                         taskTags.addView(tag);
                     }
                 }
+
+                if(task.getCustomerDisplayName() != null)
+                    taskCustomerName.setText(task.getCustomerDisplayName());
+
+                if(task.getCustomerEmail() != null)
+                    taskCustomerEmail.setText(task.getCustomerEmail());
             }
 
             @Override
