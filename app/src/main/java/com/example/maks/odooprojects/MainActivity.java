@@ -4,9 +4,11 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.maks.odooprojects.network.IGetDataService;
@@ -21,6 +23,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -30,6 +34,11 @@ public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener {
 
     private ProgressDialog progressDialog;
+    ActionBarDrawerToggle toggle;
+    DrawerLayout drawer;
+    NavigationView navigationView;
+    Toolbar toolbar;
+    Drawable toolbarDrawable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,19 +121,48 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     void goToMainPage() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        drawer = findViewById(R.id.drawer_layout);
+        toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         showSelectedFragment(new ProjectsRecyclerViewFragment());
+    }
+
+    public void crateMenuButton(){
+        toggle.setDrawerIndicatorEnabled(true);
+        if(toolbarDrawable == null) {
+            toolbarDrawable = toolbar.getNavigationIcon();
+        }
+        toolbar.setNavigationIcon(toolbarDrawable);
+        invalidateOptionsMenu();
+        toggle.syncState();
+    }
+
+    public void createBackButton() {
+        toggle.setDrawerIndicatorEnabled(false);
+        toggle.setToolbarNavigationClickListener(v -> {
+            if (!toggle.isDrawerIndicatorEnabled()) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                if (fragmentManager.getBackStackEntryCount() > 0) {
+                    fragmentManager.popBackStack();
+                }
+            } else {
+                if (drawer.isDrawerOpen(navigationView)) {
+                    drawer.closeDrawer(navigationView);
+                } else {
+                    drawer.openDrawer(navigationView);
+                }
+            }
+        });
+        toolbar.setNavigationIcon(getDrawable(R.drawable.ic_outline_arrow_back_24px));
     }
 
     @Override

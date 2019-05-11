@@ -58,6 +58,8 @@ public class EmployeesRecyclerViewFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        ((MainActivity) getActivity()).crateMenuButton();
+
         Bundle args = getArguments();
         int departmentId = args.getInt("department_id");
 

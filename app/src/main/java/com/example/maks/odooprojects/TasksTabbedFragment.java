@@ -69,6 +69,7 @@ public class TasksTabbedFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().setElevation(0);
+        ((MainActivity) getActivity()).crateMenuButton();
 
         projectId = getArguments().getInt("project_id");
         projectName = getArguments().getString("project_name");

@@ -79,6 +79,8 @@ public class EditProjectTaskFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        ((MainActivity) getActivity()).createBackButton();
+
         Bundle args = getArguments();
         int task_id = args.getInt("task_id");
 

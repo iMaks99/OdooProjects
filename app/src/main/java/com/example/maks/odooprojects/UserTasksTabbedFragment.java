@@ -61,6 +61,7 @@ public class UserTasksTabbedFragment extends Fragment
         super.onViewCreated(view, savedInstanceState);
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().setElevation(0);
+        ((MainActivity) getActivity()).crateMenuButton();
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Loading tasks...");
