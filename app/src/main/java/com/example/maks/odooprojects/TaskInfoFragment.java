@@ -31,6 +31,8 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.snackbar.Snackbar;
 
+import org.w3c.dom.Text;
+
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -101,6 +103,8 @@ public class TaskInfoFragment extends Fragment {
                 taskId
         );
 
+        ImageView taskProgressColor = view.findViewById(R.id.task_info_progress_iv);
+        TextView taskProgressName = view.findViewById(R.id.task_info_progress_name_tv);
         TextView taskName = view.findViewById(R.id.task_info_name_tv);
         TextView taskProject = view.findViewById(R.id.task_info_project_tv);
         TextView taskAssignedTo = view.findViewById(R.id.task_info_assignedto_tv);
@@ -117,7 +121,49 @@ public class TaskInfoFragment extends Fragment {
                 progressDialog.dismiss();
                 task = response.body();
 
-                getTaskStages(service, sharedPreferences);
+                Call<List<ProjectTaskType>> stages = service.getProjectTaskStages(
+                        sharedPreferences.getString("token", ""),
+                        sharedPreferences.getString("db_name", ""),
+                        task.getProjectId()
+                );
+
+                stages.enqueue(new Callback<List<ProjectTaskType>>() {
+                    @Override
+                    public void onResponse(Call<List<ProjectTaskType>> call, Response<List<ProjectTaskType>> response) {
+                        if(response.isSuccessful()){
+                            taskTypeList = response.body();
+                            ProjectTaskType taskStage = taskTypeList.stream()
+                                    .filter(t -> t.getId() == task.getStageId())
+                                    .findFirst()
+                                    .orElse(null);
+
+                            switch (task.getKanbanState()){
+                                case "normal":
+                                    taskProgressColor.setImageResource(R.drawable.ic_task_kanban_state_normal);
+                                    taskProgressName.setText(taskStage.getLegendNormal());
+                                    break;
+
+                                case "done":
+                                    taskProgressColor.setImageResource(R.drawable.ic_task_kanban_state_done);
+                                    taskProgressName.setText(taskStage.getLegendDone());
+                                    break;
+
+                                case "blocked":
+                                    taskProgressColor.setImageResource(R.drawable.ic_task_kanban_state_blocked);
+                                    taskProgressName.setText(taskStage.getLegendBlocked());
+                                    break;
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<List<ProjectTaskType>> call, Throwable t) {
+                        Toast.makeText(getContext(), "Ooops...", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                    }
+                });
+
                 if (task.getName() != null) {
                     taskName.setText(task.getName());
                     fragmentTitle.setText(task.getName());
@@ -246,27 +292,6 @@ public class TaskInfoFragment extends Fragment {
             public void onFailure(Call<ProjectTask> call, Throwable t) {
                 progressDialog.dismiss();
                 Toast.makeText(getContext(), "Ooops...", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    void getTaskStages (IGetDataService service, SharedPreferences sharedPreferences){
-        Call<List<ProjectTaskType>> stages = service.getProjectTaskStages(
-                sharedPreferences.getString("token", ""),
-                sharedPreferences.getString("db_name", ""),
-                task.getProjectId()
-        );
-
-        stages.enqueue(new Callback<List<ProjectTaskType>>() {
-            @Override
-            public void onResponse(Call<List<ProjectTaskType>> call, Response<List<ProjectTaskType>> response) {
-                taskTypeList = response.body();
-            }
-
-            @Override
-            public void onFailure(Call<List<ProjectTaskType>> call, Throwable t) {
-                Toast.makeText(getContext(), "Ooops...", Toast.LENGTH_SHORT).show();
-                progressDialog.dismiss();
             }
         });
     }

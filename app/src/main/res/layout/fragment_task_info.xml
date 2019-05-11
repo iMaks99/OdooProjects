@@ -6,7 +6,8 @@
     android:layout_height="match_parent"
     android:id="@+id/task_info_constraint_layout"
     android:orientation="vertical"
-    tools:context=".TaskInfoFragment">
+    tools:context=".TaskInfoFragment"
+    android:background="#fff">
 
     <ImageView
         android:id="@+id/task_info_progress_iv"
@@ -14,8 +15,9 @@
         android:layout_height="wrap_content"
         android:padding="5dp"
         android:src="@drawable/ic_task_kanban_state_normal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/task_info_progress_name_tv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/task_info_progress_name_tv" />
 
     <ImageView
         android:id="@+id/task_info_priority_iv"
@@ -33,13 +35,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_weight="1"
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/task_info_priority_iv"
-        app:layout_constraintTop_toBottomOf="@+id/task_info_progress_iv"
+        app:layout_constraintTop_toBottomOf="@+id/task_info_main_extra_sep_v2"
         tools:text="Task title" />
 
     <TextView
@@ -168,22 +172,31 @@
     <View
         android:id="@+id/task_info_main_extra_sep_v"
         android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:background="@android:color/darker_gray"
+        android:layout_height="8dp"
+        android:layout_marginTop="8dp"
+        android:background="#fafafa"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/task_info_description_tv" />
+
+    <View
+        android:id="@+id/task_info_main_extra_sep_v2"
+        android:layout_width="0dp"
+        android:layout_height="8dp"
+        android:layout_marginTop="8dp"
+        android:background="#fafafa"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/task_info_progress_name_tv" />
 
     <TextView
         android:id="@+id/task_info_extra"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="Extra Info"
         app:layout_constraintEnd_toEndOf="parent"
@@ -239,6 +252,19 @@
         app:layout_constraintStart_toEndOf="@+id/task_customer_mail"
         app:layout_constraintTop_toBottomOf="@+id/task_customer_name_tv"
         tools:text="some name" />
+
+    <TextView
+        android:id="@+id/task_info_progress_name_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:gravity="end"
+        android:text="TextView"
+        app:layout_constraintEnd_toStartOf="@+id/task_info_progress_iv"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
