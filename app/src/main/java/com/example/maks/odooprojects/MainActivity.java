@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         init();
     }
 
@@ -113,13 +112,6 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.ma, menu);
-        return true;
-    }
-
     void goToMainPage() {
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -164,18 +156,6 @@ public class MainActivity extends AppCompatActivity implements
         });
         toolbar.setNavigationIcon(getDrawable(R.drawable.ic_outline_arrow_back_24px));
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
