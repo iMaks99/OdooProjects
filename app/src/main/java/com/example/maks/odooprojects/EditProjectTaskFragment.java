@@ -157,7 +157,8 @@ public class EditProjectTaskFragment extends Fragment {
                     });
 
                     EditText taskDescription = view.findViewById(R.id.new_project_task_description_ev);
-                    taskDescription.setText(HtmlCompat.fromHtml(mTask.getDescription(), HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    if (mTask.getDescription() != null)
+                        taskDescription.setText(HtmlCompat.fromHtml(mTask.getDescription(), HtmlCompat.FROM_HTML_MODE_LEGACY));
 
                     taskStages = view.findViewById(R.id.new_project_task_stage_sp);
                     ArrayAdapter<String> spinnerAdapterStages = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, android.R.id.text1);

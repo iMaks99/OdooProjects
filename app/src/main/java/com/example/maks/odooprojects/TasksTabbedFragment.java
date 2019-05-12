@@ -80,7 +80,7 @@ public class TasksTabbedFragment extends Fragment
                     .newInstance(projectId, projectName);
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .replace(R.id.content_frame, createProjectTaskFragment)
+                    .replace(R.id.content_frame, createProjectTaskFragment, "task_create")
                     .addToBackStack(null)
                     .commit();
         });

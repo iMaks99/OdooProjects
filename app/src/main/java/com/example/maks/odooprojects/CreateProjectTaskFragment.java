@@ -2,18 +2,23 @@ package com.example.maks.odooprojects;
 
 
 import android.app.DatePickerDialog;
+import android.app.Service;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.inputmethodservice.InputMethodService;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -36,8 +41,10 @@ import com.google.android.material.snackbar.Snackbar;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -51,9 +58,17 @@ import retrofit2.Response;
 public class CreateProjectTaskFragment extends Fragment {
 
     List<ResPartner> mPartners;
+    List<ResPartner> mPartnersAll;
     List<ProjectProject> mProjects;
     List<ProjectTaskType> mStages;
     List<ProjectTaskTag> mTags;
+    Spinner taskCustomers;
+    ProjectTaskType taskStage;
+    EditText taskCustomerEmail;
+    ProjectTask mTask;
+    ImageView taskProgress;
+    TextView taskProgressLegend;
+    Spinner taskStages;
 
     public CreateProjectTaskFragment() {
         // Required empty public constructor
@@ -80,27 +95,31 @@ public class CreateProjectTaskFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        ((MainActivity) getActivity()).createBackButton();
         ((MainActivity) getActivity()).setToolbarTitleEnabled("Creating task");
 
         Bundle args = getArguments();
         int projectId = args.getInt("project_id");
         String projectName = args.getString("project_name");
 
-        ProjectTask task = new ProjectTask();
-        task.setProjectName(projectName);
-        task.setIsPriority(0);
+        mTask = new ProjectTask();
+        mTask.setProjectName(projectName);
+        mTask.setIsPriority(0);
 
         TextView taskName = view.findViewById(R.id.new_project_task_name_ev);
         ImageView taskPriority = view.findViewById(R.id.new_project_task_priority_iv);
         taskPriority.setOnClickListener(v -> {
-            if(task.isPriority() == 0){
-                task.setIsPriority(1);
+            if (mTask.isPriority() == 0) {
+                mTask.setIsPriority(1);
                 taskPriority.setImageResource(R.drawable.ic_star_filled);
             } else {
-                task.setIsPriority(0);
+                mTask.setIsPriority(0);
                 taskPriority.setImageResource(R.drawable.ic_star_border);
             }
         });
+
+        taskProgress = view.findViewById(R.id.new_project_task_progress_iv);
+        taskProgressLegend = view.findViewById(R.id.new_project_task_progress_name_tv);
 
         EditText taskDeadline = view.findViewById(R.id.new_project_task_deadline_ev);
         final Calendar deadlineCalendar = Calendar.getInstance();
@@ -113,7 +132,7 @@ public class CreateProjectTaskFragment extends Fragment {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat(dateFormat, Locale.ROOT);
             taskDeadline.setText(simpleDateFormat.format(deadlineCalendar.getTime()));
 
-            task.setDeadline(deadlineCalendar.getTime());
+            mTask.setDeadline(deadlineCalendar.getTime());
         };
 
         taskDeadline.setOnClickListener(v -> {
@@ -126,22 +145,26 @@ public class CreateProjectTaskFragment extends Fragment {
         IGetDataService service = RetrofitClientInstance.getRetrofitInstance().create(IGetDataService.class);
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("AuthPref", Context.MODE_PRIVATE);
 
-        Spinner taskStage = view.findViewById(R.id.new_project_task_stage_sp);
+        taskStages = view.findViewById(R.id.new_project_task_stage_sp);
         ArrayAdapter<String> spinnerAdapterStages = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, android.R.id.text1);
         spinnerAdapterStages.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        taskStage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        taskStages.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedStage = taskStage.getItemAtPosition(position).toString();
-                task.setStageId(mStages.stream()
-                        .filter(s -> s.getName() == selectedStage)
+                String selectedStage = taskStages.getItemAtPosition(position).toString();
+                mTask.setStageId(mStages.stream()
+                        .filter(s -> s.getName().equals(selectedStage))
                         .findFirst()
                         .orElse(null)
                         .getId());
+
+                mTask.setKanbanState("normal");
+                onTaskStageChanged();
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         Spinner taskProject = view.findViewById(R.id.new_project_task_project_sp);
@@ -160,17 +183,18 @@ public class CreateProjectTaskFragment extends Fragment {
                 spinnerAdapterStages.clear();
                 String selectedProject = taskProject.getItemAtPosition(position).toString();
                 int selectedProjectId = mProjects.stream()
-                        .filter(p -> p.getName() == selectedProject)
+                        .filter(p -> p.getName().equals(selectedProject))
                         .findFirst()
                         .orElse(null)
                         .getId();
                 getStages(spinnerAdapterStages, service, sharedPreferences, selectedProjectId);
-                task.setProjectName(selectedProject);
-                taskStage.setAdapter(spinnerAdapterStages);
+                mTask.setProjectName(selectedProject);
+                taskStages.setAdapter(spinnerAdapterStages);
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         Spinner taskAssigned = view.findViewById(R.id.new_project_task_assigned_sp);
@@ -185,17 +209,18 @@ public class CreateProjectTaskFragment extends Fragment {
         taskAssigned.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                task.setAssignedTo(taskAssigned.getItemAtPosition(position).toString());
+                mTask.setAssignedTo(taskAssigned.getItemAtPosition(position).toString());
 
-                task.setAssignedToId(mPartners.stream()
-                        .filter(p -> p.getName() == task.getAssignedTo())
+                mTask.setAssignedToId(mPartners.stream()
+                        .filter(p -> p.getName().equals(mTask.getAssignedTo()))
                         .findFirst()
                         .orElse(null)
                         .getId());
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
         });
 
         Call<List<ProjectTaskTag>> request = service.getTaskTagsAll(
@@ -208,7 +233,7 @@ public class CreateProjectTaskFragment extends Fragment {
             public void onResponse(Call<List<ProjectTaskTag>> call, Response<List<ProjectTaskTag>> response) {
                 mTags = response.body();
                 ChipGroup selectTaskTags = view.findViewById(R.id.new_project_task_tags_chg);
-                for(ProjectTaskTag tag : mTags){
+                for (ProjectTaskTag tag : mTags) {
                     View v = LayoutInflater.from(getContext()).inflate(R.layout.task_tag_select_chip, selectTaskTags, false);
                     Chip tagChip = v.findViewById(R.id.filter_chip_task_tag);
                     tagChip.setText(tag.getName());
@@ -217,13 +242,13 @@ public class CreateProjectTaskFragment extends Fragment {
 
                         ProjectTaskTag projectTaskTag = mTags.stream().filter(t -> t.getName() == ch.getText().toString()).findFirst().orElse(null);
 
-                        if(task.getTags() == null)
-                            task.setTags(new ArrayList<>());
+                        if (mTask.getTags() == null)
+                            mTask.setTags(new ArrayList<>());
 
-                        if(isSelecred)
-                            task.getTags().add(projectTaskTag);
+                        if (isSelecred)
+                            mTask.getTags().add(projectTaskTag);
                         else
-                            task.getTags().remove(projectTaskTag);
+                            mTask.getTags().remove(projectTaskTag);
                     });
 
                     selectTaskTags.addView(tagChip);
@@ -237,10 +262,30 @@ public class CreateProjectTaskFragment extends Fragment {
             }
         });
 
+        EditText taskDescription = view.findViewById(R.id.new_project_task_description_ev);
+        taskCustomerEmail = view.findViewById(R.id.new_project_task_customer_email_ev);
+
+        taskCustomers = view.findViewById(R.id.new_project_task_customer_name_sp);
+        ArrayAdapter<String> spinnerAdapterCustomer = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, android.R.id.text1);
+        spinnerAdapterCustomer.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        getAllPartners(spinnerAdapterCustomer, service, sharedPreferences);
+
         Button taskSave = view.findViewById(R.id.new_project_task_save_btn);
         taskSave.setOnClickListener(v -> {
-            task.setName(taskName.getText().toString());
-            createNewTask(service, sharedPreferences, task);
+            mTask.setName(taskName.getText().toString());
+            mTask.setDescription(HtmlCompat.toHtml(taskDescription.getText(), HtmlCompat.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL));
+
+            if (mTask.getName() == null || mTask.getName().equals(""))
+                Snackbar.make(getActivity().findViewById(R.id.content_frame), "Please fill task name", Snackbar.LENGTH_LONG)
+                        .setAction("Add task name", view12 -> {
+
+                            taskName.requestFocus();
+                            InputMethodManager imgr = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            imgr.showSoftInput(taskName, InputMethodManager.SHOW_IMPLICIT);
+
+                        }).show();
+            else
+                createNewTask(service, sharedPreferences, mTask);
         });
 
         Button taskDiscard = view.findViewById(R.id.new_project_task_discard_btn);
@@ -251,6 +296,25 @@ public class CreateProjectTaskFragment extends Fragment {
                     .setNegativeButton("Cancel", (dialog, id) -> dialog.cancel());
             builder.show();
         });
+    }
+
+    private void onTaskStageChanged() {
+        switch (mTask.getKanbanState()) {
+            case "normal":
+                taskProgress.setImageResource(R.drawable.ic_task_kanban_state_normal);
+                taskProgressLegend.setText(taskStage.getLegendNormal());
+                break;
+
+            case "done":
+                taskProgress.setImageResource(R.drawable.ic_task_kanban_state_done);
+                taskProgressLegend.setText(taskStage.getLegendDone());
+                break;
+
+            case "blocked":
+                taskProgress.setImageResource(R.drawable.ic_task_kanban_state_blocked);
+                taskProgressLegend.setText(taskStage.getLegendBlocked());
+                break;
+        }
     }
 
     private void getStages(ArrayAdapter<String> spinnerAdapterStages, IGetDataService service,
@@ -268,6 +332,52 @@ public class CreateProjectTaskFragment extends Fragment {
 
                 for (ProjectTaskType taskType : mStages)
                     spinnerAdapterStages.add(taskType.getName());
+
+                mTask.setStageId(mStages.get(0).getId());
+
+                taskStage = mStages.stream()
+                        .filter(s -> s.getId() == mTask.getStageId())
+                        .findFirst()
+                        .orElse(null);
+
+                mTask.setKanbanState("normal");
+                onTaskStageChanged();
+
+                taskProgress.setOnClickListener(v -> {
+                    String[] kanbanDialog = new String[2];
+                    Map<String, String> kanban = new HashMap<>();
+
+                    switch (mTask.getKanbanState()) {
+                        case "normal":
+                            kanbanDialog[0] = taskStage.getLegendDone();
+                            kanbanDialog[1] = taskStage.getLegendBlocked();
+                            kanban.put(kanbanDialog[0], "done");
+                            kanban.put(kanbanDialog[1], "blocked");
+                            break;
+
+                        case "done":
+                            kanbanDialog[0] = taskStage.getLegendNormal();
+                            kanbanDialog[1] = taskStage.getLegendBlocked();
+                            kanban.put(kanbanDialog[0], "normal");
+                            kanban.put(kanbanDialog[1], "blocked");
+                            break;
+
+                        case "blocked":
+                            kanbanDialog[0] = taskStage.getLegendDone();
+                            kanbanDialog[1] = taskStage.getLegendNormal();
+                            kanban.put(kanbanDialog[0], "done");
+                            kanban.put(kanbanDialog[1], "normal");
+                            break;
+                    }
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setItems(kanbanDialog,
+                            (dialogInterface, which) -> {
+                                mTask.setKanbanState(kanban.get(kanbanDialog[which]));
+                                onTaskStageChanged();
+                            });
+                    builder.show();
+                });
             }
 
             @Override
@@ -324,6 +434,63 @@ public class CreateProjectTaskFragment extends Fragment {
         });
     }
 
+    private void getAllPartners(ArrayAdapter<String> stringArrayAdapter, IGetDataService service, SharedPreferences sharedPreferences) {
+        Call<List<ResPartner>> request = service.getPartnersAll(
+                sharedPreferences.getString("token", ""),
+                sharedPreferences.getString("db_name", "")
+        );
+
+        request.enqueue(new Callback<List<ResPartner>>() {
+            @Override
+            public void onResponse(Call<List<ResPartner>> call, Response<List<ResPartner>> response) {
+
+                if (response.isSuccessful()) {
+                    mPartnersAll = response.body();
+
+                    for (ResPartner partner : mPartnersAll)
+                        if (partner.getDisplayedName() == null)
+                            stringArrayAdapter.add(partner.getName());
+                        else
+                            stringArrayAdapter.add(partner.getDisplayedName());
+
+
+                    taskCustomers.setAdapter(stringArrayAdapter);
+                    taskCustomers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            ResPartner selectedCustomer = mPartnersAll.stream()
+                                    .filter(c -> {
+                                        if (c.getDisplayedName() != null)
+                                            return c.getDisplayedName().equals(taskCustomers.getItemAtPosition(position).toString());
+                                        return c.getName().equals(taskCustomers.getItemAtPosition(position).toString());
+                                    })
+                                    .findFirst()
+                                    .orElse(null);
+
+                            mTask.setCustomerId(selectedCustomer.getId());
+                            mTask.setCustomerDisplayName(selectedCustomer.getDisplayedName());
+                            mTask.setCustomerEmail(selectedCustomer.getEmail());
+
+                            taskCustomerEmail.setText(selectedCustomer.getEmail());
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<ResPartner>> call, Throwable t) {
+                Snackbar.make(getActivity().findViewById(R.id.content_frame), "Internet connection lost", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+    }
+
     private void createNewTask(IGetDataService service, SharedPreferences sharedPreferences,
                                ProjectTask projectTask) {
 
@@ -339,7 +506,17 @@ public class CreateProjectTaskFragment extends Fragment {
                 if (response.isSuccessful()) {
                     Snackbar.make(getActivity().findViewById(R.id.content_frame), "Task successfully created!", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
+
                     projectTask.setId(response.body());
+
+                    TaskInfoFragment taskInfoFragment = TaskInfoFragment.newInstance(projectTask.getId());
+                    FragmentManager fm = getFragmentManager();
+                    fm.popBackStackImmediate();
+                    fm.beginTransaction()
+                            .replace(R.id.content_frame, taskInfoFragment)
+                            .addToBackStack(null)
+                            .commit();
+
                 } else
                     Snackbar.make(getActivity().findViewById(R.id.content_frame), "Task does not created", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
