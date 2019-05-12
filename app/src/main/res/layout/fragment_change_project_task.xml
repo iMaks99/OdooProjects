@@ -1,191 +1,335 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".CreateProjectTaskFragment">
 
-    <EditText
-        android:id="@+id/new_project_task_name_ev"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:gravity="start"
-        android:hint="Task Title ..."
-        android:inputType="text"
-        android:lines="2"
-        android:maxLines="4"
-        android:minLines="1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.003"
-        app:layout_constraintStart_toEndOf="@+id/new_project_task_priority_iv"
-        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF">
 
-    <ImageView
-        android:id="@+id/new_project_task_priority_iv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:padding="4dp"
-        android:src="@drawable/ic_star_border"
-        app:layout_constraintBottom_toBottomOf="@+id/new_project_task_name_ev"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/new_project_task_name_ev"
-        app:layout_constraintVertical_bias="0.38" />
+        <View
+            android:id="@+id/task_info_main_extra_sep_v4"
+            android:layout_width="0dp"
+            android:layout_height="8dp"
+            android:layout_marginTop="8dp"
+            android:background="#fafafa"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/new_project_task_description_ev" />
 
-    <TextView
-        android:id="@+id/new_project_task_project"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="Project"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/new_project_task_project_sp"
-        app:layout_constraintEnd_toEndOf="@+id/new_project_task_assignedto"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        <View
+            android:id="@+id/task_info_main_extra_sep_v3"
+            android:layout_width="0dp"
+            android:layout_height="8dp"
+            android:layout_marginTop="8dp"
+            android:background="#fafafa"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/new_project_task_progress_name_tv" />
 
-    <TextView
-        android:id="@+id/new_project_task_assignedto"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="Assigned to"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/new_project_task_assigned_sp"
-        app:layout_constraintStart_toStartOf="parent" />
+        <EditText
+            android:id="@+id/new_project_task_name_ev"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:gravity="start"
+            android:hint="Task Title ..."
+            android:inputType="text"
+            android:lines="2"
+            android:maxLines="4"
+            android:minLines="1"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/new_project_task_priority_iv"
+            app:layout_constraintTop_toBottomOf="@+id/task_info_main_extra_sep_v3" />
 
-    <TextView
-        android:id="@+id/new_project_task_deadline"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="Deadline"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/new_project_task_deadline_ev"
-        app:layout_constraintEnd_toEndOf="@+id/new_project_task_assignedto"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/new_project_task_tags"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="Tags"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="@+id/new_project_task_assignedto"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/new_project_task_tags_chg" />
-
-    <Spinner
-        android:id="@+id/new_project_task_project_sp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/new_project_task_project"
-        app:layout_constraintTop_toBottomOf="@+id/new_project_task_name_ev" />
-
-    <Spinner
-        android:id="@+id/new_project_task_assigned_sp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/new_project_task_assignedto"
-        app:layout_constraintTop_toBottomOf="@+id/new_project_task_stage_sp" />
-
-    <EditText
-        android:id="@+id/new_project_task_deadline_ev"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:clickable="true"
-        android:ems="10"
-        android:focusable="false"
-        android:inputType="none"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/new_project_task_deadline"
-        app:layout_constraintTop_toBottomOf="@+id/new_project_task_assigned_sp" />
-
-    <TextView
-        android:id="@+id/new_project_task_stage"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="Stage"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="@+id/new_project_task_stage_sp"
-        app:layout_constraintEnd_toEndOf="@+id/new_project_task_assignedto"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Spinner
-        android:id="@+id/new_project_task_stage_sp"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/new_project_task_stage"
-        app:layout_constraintTop_toBottomOf="@+id/new_project_task_project_sp" />
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
-        android:gravity="bottom|end"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:id="@+id/new_project_task_discard_btn"
+        <ImageView
+            android:id="@+id/new_project_task_priority_iv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"
-            android:layout_weight="1"
-            android:text="@string/discard" />
+            android:layout_marginStart="12dp"
+            android:padding="4dp"
+            android:src="@drawable/ic_star_border"
+            app:layout_constraintBottom_toBottomOf="@+id/new_project_task_name_ev"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/new_project_task_name_ev"
+            app:layout_constraintVertical_bias="0.38" />
 
-        <Button
-            android:id="@+id/new_project_task_save_btn"
+        <TextView
+            android:id="@+id/new_project_task_project"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Project"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/new_project_task_project_sp"
+            app:layout_constraintEnd_toEndOf="@+id/new_project_task_assignedto"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/new_project_task_assignedto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="4dp"
-            android:layout_weight="1"
-            android:text="@string/save" />
-    </LinearLayout>
+            android:layout_marginStart="8dp"
+            android:text="Assigned to"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/new_project_task_assigned_sp"
+            app:layout_constraintStart_toStartOf="parent" />
 
-    <com.google.android.material.chip.ChipGroup
-        android:id="@+id/new_project_task_tags_chg"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/new_project_task_tags"
-        app:layout_constraintTop_toBottomOf="@+id/new_project_task_deadline_ev"
-        app:singleSelection="true" />
+        <TextView
+            android:id="@+id/new_project_task_deadline"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Deadline"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/new_project_task_deadline_ev"
+            app:layout_constraintEnd_toEndOf="@+id/new_project_task_assignedto"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/new_project_task_tags"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Tags"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/new_project_task_assignedto"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/new_project_task_tags_chg" />
+
+        <Spinner
+            android:id="@+id/new_project_task_project_sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/new_project_task_project"
+            app:layout_constraintTop_toBottomOf="@+id/new_project_task_name_ev" />
+
+        <Spinner
+            android:id="@+id/new_project_task_assigned_sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/new_project_task_assignedto"
+            app:layout_constraintTop_toBottomOf="@+id/new_project_task_stage_sp" />
+
+        <Spinner
+            android:id="@+id/new_project_task_customer_name_sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/new_project_task_customer_name"
+            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+
+        <EditText
+            android:id="@+id/new_project_task_deadline_ev"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:clickable="true"
+            android:ems="10"
+            android:focusable="false"
+            android:inputType="none"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toEndOf="@+id/new_project_task_deadline"
+            app:layout_constraintTop_toBottomOf="@+id/new_project_task_assigned_sp" />
+
+        <TextView
+            android:id="@+id/new_project_task_stage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Stage"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/new_project_task_stage_sp"
+            app:layout_constraintEnd_toEndOf="@+id/new_project_task_assignedto"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <Spinner
+            android:id="@+id/new_project_task_stage_sp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/new_project_task_stage"
+            app:layout_constraintTop_toBottomOf="@+id/new_project_task_project_sp" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="bottom|end"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/new_project_task_customer_email_ev"
+            app:layout_constraintVertical_bias="0.952">
+
+            <Button
+                android:id="@+id/new_project_task_discard_btn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="4dp"
+                android:layout_weight="1"
+                android:text="@string/discard" />
+
+            <Button
+                android:id="@+id/new_project_task_save_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_weight="1"
+                android:text="@string/save" />
+        </LinearLayout>
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/new_project_task_tags_chg"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/new_project_task_tags"
+            app:layout_constraintTop_toBottomOf="@+id/new_project_task_deadline_ev"
+            app:singleSelection="true" />
+
+        <ImageView
+            android:id="@+id/new_project_task_progress_iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:src="@drawable/ic_task_kanban_state_normal"
+            app:layout_constraintBottom_toBottomOf="@+id/new_project_task_progress_name_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/new_project_task_progress_name_tv" />
+
+        <TextView
+            android:id="@+id/new_project_task_progress_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/new_project_task_progress_iv"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="TextView" />
+
+        <TextView
+            android:id="@+id/new_project_task_description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="Description"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/new_project_task_assignedto"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/new_project_task_tags_chg" />
+
+        <EditText
+            android:id="@+id/new_project_task_description_ev"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:gravity="start|top"
+            android:inputType="textMultiLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/new_project_task_description" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="Extra info"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/task_info_main_extra_sep_v4" />
+
+        <TextView
+            android:id="@+id/new_project_task_customer_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Customer"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/new_project_task_customer_name_sp"
+            app:layout_constraintEnd_toEndOf="@+id/new_project_task_assignedto"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/new_project_task_customer_email"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Email"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@+id/new_project_task_customer_email_ev"
+            app:layout_constraintEnd_toEndOf="@+id/new_project_task_assignedto"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <EditText
+            android:id="@+id/new_project_task_customer_email_ev"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:inputType="textEmailAddress"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/new_project_task_customer_email"
+            app:layout_constraintTop_toBottomOf="@+id/new_project_task_customer_name_sp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

@@ -9,8 +9,11 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 
+import android.text.Html;
+import android.text.SpannedString;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,8 +39,10 @@ import com.google.android.material.snackbar.Snackbar;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
@@ -51,11 +56,18 @@ import retrofit2.Response;
 public class EditProjectTaskFragment extends Fragment {
 
     ProjectTask mTask;
-    List<ResPartner> mPartners;
+    List<ResPartner> mCompanyPartners;
+    List<ResPartner> mPartnersAll;
     List<ProjectProject> mProjects;
     List<ProjectTaskType> mStages;
     List<ProjectTaskTag> mTags;
-    Spinner taskStage;
+    Spinner taskStages;
+    Spinner taskCustomers;
+    ProjectTaskType taskStage;
+
+    ImageView taskProgress;
+    TextView taskProgressLegend;
+    EditText taskCustomerEmail;
 
     public EditProjectTaskFragment() {
         // Required empty public constructor
@@ -101,6 +113,9 @@ public class EditProjectTaskFragment extends Fragment {
                 if (response.isSuccessful()) {
                     mTask = response.body();
 
+                    taskProgress = view.findViewById(R.id.new_project_task_progress_iv);
+                    taskProgressLegend = view.findViewById(R.id.new_project_task_progress_name_tv);
+
                     TextView taskName = view.findViewById(R.id.new_project_task_name_ev);
                     taskName.setText(mTask.getName());
 
@@ -141,18 +156,29 @@ public class EditProjectTaskFragment extends Fragment {
                                 deadlineCalendar.get(Calendar.DAY_OF_MONTH)).show();
                     });
 
-                    taskStage = view.findViewById(R.id.new_project_task_stage_sp);
+                   // EditText taskDescription = view.findViewById(R.id.new_project_task_description_ev);
+                   // taskDescription.setText(HtmlCompat.fromHtml(mTask.getDescription(), HtmlCompat.FROM_HTML_MODE_LEGACY));
+
+                    taskStages = view.findViewById(R.id.new_project_task_stage_sp);
                     ArrayAdapter<String> spinnerAdapterStages = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, android.R.id.text1);
                     spinnerAdapterStages.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    taskStage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                    if (mStages == null)
+                        getStages(spinnerAdapterStages, service, sharedPreferences, mTask.getProjectId());
+                    else
+                        for (ProjectTaskType stage : mStages)
+                            spinnerAdapterStages.add(stage.getName());
+                    taskStages.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            String selectedStage = taskStage.getItemAtPosition(position).toString();
+                            String selectedStage = taskStages.getItemAtPosition(position).toString();
                             mTask.setStageId(mStages.stream()
-                                    .filter(s -> s.getName() == selectedStage)
+                                    .filter(s -> s.getName().equals(selectedStage))
                                     .findFirst()
                                     .orElse(null)
                                     .getId());
+
+                            mTask.setKanbanState("normal");
+                            onTaskStageChanged();
                         }
 
                         @Override
@@ -183,7 +209,7 @@ public class EditProjectTaskFragment extends Fragment {
                             getStages(spinnerAdapterStages, service, sharedPreferences, selectedProjectId);
 
                             mTask.setProjectName(selectedProject);
-                            taskStage.setAdapter(spinnerAdapterStages);
+                            taskStages.setAdapter(spinnerAdapterStages);
                         }
 
                         @Override
@@ -213,7 +239,10 @@ public class EditProjectTaskFragment extends Fragment {
 
                                 tagChip.setOnCheckedChangeListener((ch, isSelecred) -> {
 
-                                    ProjectTaskTag projectTaskTag = mTags.stream().filter(t -> t.getName() == ch.getText().toString()).findFirst().orElse(null);
+                                    ProjectTaskTag projectTaskTag = mTags.stream()
+                                            .filter(t -> t.getName().equals(ch.getText().toString()))
+                                            .findFirst()
+                                            .orElse(null);
 
                                     if (mTask.getTags() == null)
                                         mTask.setTags(new ArrayList<>());
@@ -238,10 +267,10 @@ public class EditProjectTaskFragment extends Fragment {
                     Spinner taskAssigned = view.findViewById(R.id.new_project_task_assigned_sp);
                     ArrayAdapter<String> spinnerAdapterPartner = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, android.R.id.text1);
                     spinnerAdapterPartner.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                    if (mPartners == null)
-                        getPartners(spinnerAdapterPartner, service, sharedPreferences);
+                    if (mCompanyPartners == null)
+                        getUserPartners(spinnerAdapterPartner, service, sharedPreferences);
                     else
-                        for (ResPartner partner : mPartners)
+                        for (ResPartner partner : mCompanyPartners)
                             spinnerAdapterPartner.add(partner.getName());
                     taskAssigned.setAdapter(spinnerAdapterPartner);
                     taskAssigned.setSelection(spinnerAdapterPartner.getPosition(mTask.getAssignedTo()));
@@ -250,8 +279,8 @@ public class EditProjectTaskFragment extends Fragment {
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                             mTask.setAssignedTo(taskAssigned.getItemAtPosition(position).toString());
 
-                            mTask.setAssignedToId(mPartners.stream()
-                                    .filter(p -> p.getName() == mTask.getAssignedTo())
+                            mTask.setAssignedToId(mCompanyPartners.stream()
+                                    .filter(p -> p.getName().equals(mTask.getAssignedTo()))
                                     .findFirst()
                                     .orElse(null)
                                     .getId());
@@ -262,9 +291,20 @@ public class EditProjectTaskFragment extends Fragment {
                         }
                     });
 
+                   /* taskCustomerEmail = view.findViewById(R.id.new_project_task_customer_email_ev);
+                    if(mTask.getCustomerEmail() != null)
+                        taskCustomerEmail.setText(mTask.getCustomerEmail());
+
+                    taskCustomers = view.findViewById(R.id.new_project_task_customer_name_sp);
+                    ArrayAdapter<String> spinnerAdapterCustomer = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, android.R.id.text1);
+                    spinnerAdapterCustomer.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                    getAllPartners(spinnerAdapterCustomer, service, sharedPreferences);
+*/
                     Button taskSave = view.findViewById(R.id.new_project_task_save_btn);
                     taskSave.setOnClickListener(v -> {
                         mTask.setName(taskName.getText().toString());
+                      //  mTask.setCustomerEmail(taskCustomerEmail.getText().toString());
+                      //  mTask.setDescription(HtmlCompat.toHtml(taskDescription.getText(), HtmlCompat.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL));
                         editProjectTask(service, sharedPreferences);
                     });
 
@@ -288,6 +328,25 @@ public class EditProjectTaskFragment extends Fragment {
         });
     }
 
+    private void onTaskStageChanged() {
+        switch (mTask.getKanbanState()) {
+            case "normal":
+                taskProgress.setImageResource(R.drawable.ic_task_kanban_state_normal);
+                taskProgressLegend.setText(taskStage.getLegendNormal());
+                break;
+
+            case "done":
+                taskProgress.setImageResource(R.drawable.ic_task_kanban_state_done);
+                taskProgressLegend.setText(taskStage.getLegendDone());
+                break;
+
+            case "blocked":
+                taskProgress.setImageResource(R.drawable.ic_task_kanban_state_blocked);
+                taskProgressLegend.setText(taskStage.getLegendBlocked());
+                break;
+        }
+    }
+
     private void getStages(ArrayAdapter<String> spinnerAdapterStages, IGetDataService service,
                            SharedPreferences sharedPreferences, int projectId) {
         Call<List<ProjectTaskType>> request = service.getProjectTaskStages(
@@ -304,13 +363,51 @@ public class EditProjectTaskFragment extends Fragment {
                 for (ProjectTaskType taskType : mStages)
                     spinnerAdapterStages.add(taskType.getName());
 
-                taskStage.setSelection(spinnerAdapterStages.getPosition(
-                        mStages.stream()
-                                .filter(s -> s.getId() == mTask.getStageId())
-                                .findFirst()
-                                .orElse(null)
-                                .getName()));
-            }
+                taskStage = mStages.stream()
+                        .filter(s -> s.getId() == mTask.getStageId())
+                        .findFirst()
+                        .orElse(null);
+
+                onTaskStageChanged();
+                taskStages.setSelection(spinnerAdapterStages.getPosition(taskStage.getName()));
+
+                taskProgress.setOnClickListener(v -> {
+                    String[] kanbanDialog = new String[2];
+                    Map<String, String> kanban = new HashMap<>();
+
+                    switch (mTask.getKanbanState()) {
+                        case "normal":
+                            kanbanDialog[0] = taskStage.getLegendDone();
+                            kanbanDialog[1] = taskStage.getLegendBlocked();
+                            kanban.put(kanbanDialog[0], "done");
+                            kanban.put(kanbanDialog[1], "blocked");
+                            break;
+
+                        case "done":
+                            kanbanDialog[0] = taskStage.getLegendNormal();
+                            kanbanDialog[1] = taskStage.getLegendBlocked();
+                            kanban.put(kanbanDialog[0], "normal");
+                            kanban.put(kanbanDialog[1], "blocked");
+                            break;
+
+                        case "blocked":
+                            kanbanDialog[0] = taskStage.getLegendDone();
+                            kanbanDialog[1] = taskStage.getLegendNormal();
+                            kanban.put(kanbanDialog[0], "done");
+                            kanban.put(kanbanDialog[1], "normal");
+                            break;
+                    }
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setItems(kanbanDialog,
+                            (dialogInterface, which) -> {
+                                mTask.setKanbanState(kanban.get(kanbanDialog[which]));
+                                onTaskStageChanged();
+                            });
+                    builder.show();
+                });
+
+           }
 
             @Override
             public void onFailure(Call<List<ProjectTaskType>> call, Throwable t) {
@@ -343,8 +440,8 @@ public class EditProjectTaskFragment extends Fragment {
         });
     }
 
-    private void getPartners(ArrayAdapter<String> stringArrayAdapter, IGetDataService service, SharedPreferences sharedPreferences) {
-        Call<List<ResPartner>> request = service.getPartners(
+    private void getUserPartners(ArrayAdapter<String> stringArrayAdapter, IGetDataService service, SharedPreferences sharedPreferences) {
+        Call<List<ResPartner>> request = service.getUserPartners(
                 sharedPreferences.getString("token", ""),
                 sharedPreferences.getString("db_name", "")
         );
@@ -352,10 +449,60 @@ public class EditProjectTaskFragment extends Fragment {
         request.enqueue(new Callback<List<ResPartner>>() {
             @Override
             public void onResponse(Call<List<ResPartner>> call, Response<List<ResPartner>> response) {
-                mPartners = response.body();
+                mCompanyPartners = response.body();
 
-                for (ResPartner partner : mPartners)
+                for (ResPartner partner : mCompanyPartners)
                     stringArrayAdapter.add(partner.getName());
+            }
+
+            @Override
+            public void onFailure(Call<List<ResPartner>> call, Throwable t) {
+                Snackbar.make(getActivity().findViewById(R.id.content_frame), "Internet connection lost", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+    }
+
+    private void getAllPartners(ArrayAdapter<String> stringArrayAdapter, IGetDataService service, SharedPreferences sharedPreferences) {
+        Call<List<ResPartner>> request = service.getPartnersAll(
+                sharedPreferences.getString("token", ""),
+                sharedPreferences.getString("db_name", "")
+        );
+
+        request.enqueue(new Callback<List<ResPartner>>() {
+            @Override
+            public void onResponse(Call<List<ResPartner>> call, Response<List<ResPartner>> response) {
+
+                if (response.isSuccessful()) {
+                    mPartnersAll = response.body();
+
+                    for (ResPartner partner : mPartnersAll)
+                        stringArrayAdapter.add(partner.getDisplayedName());
+
+                    taskCustomers.setAdapter(stringArrayAdapter);
+                    taskCustomers.setSelection(stringArrayAdapter.getPosition(mTask.getCustomerDisplayName()));
+                    taskCustomers.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                            ResPartner selectedCustomer = mPartnersAll.stream()
+                                    .filter(c -> c.getDisplayedName().equals(taskCustomers.getItemAtPosition(position).toString()))
+                                    .findFirst()
+                                    .orElse(null);
+
+                            mTask.setCustomerId(selectedCustomer.getId());
+                            mTask.setCustomerDisplayName(selectedCustomer.getDisplayedName());
+                            mTask.setCustomerEmail(selectedCustomer.getEmail());
+
+                            taskCustomerEmail.setText(selectedCustomer.getEmail());
+                        }
+
+                        @Override
+                        public void onNothingSelected(AdapterView<?> parent) {
+
+                        }
+                    });
+
+                }
             }
 
             @Override

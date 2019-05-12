@@ -121,8 +121,14 @@ public interface IGetDataService {
             @Query("department_id") int departmentId
     );
 
-    @GET("getrespartners/")
-    Call<List<ResPartner>> getPartners(
+    @GET("getuserrespartners/")
+    Call<List<ResPartner>> getUserPartners(
+            @Header("Authorization") String token,
+            @Header("dbname") String dbname
+    );
+
+    @GET("getrespartnersall")
+    Call<List<ResPartner>> getPartnersAll(
             @Header("Authorization") String token,
             @Header("dbname") String dbname
     );

@@ -9,11 +9,14 @@ public class ResPartner {
     private String name;
     @SerializedName("displayed_name")
     private String displayedName;
+    @SerializedName("email")
+    private String email;
 
-    public ResPartner(int id, String name, String displayedName) {
+    public ResPartner(int id, String name, String displayedName, String email) {
         this.id = id;
         this.name = name;
         this.displayedName = displayedName;
+        this.email = email;
     }
 
     public int getId() {
@@ -38,5 +41,13 @@ public class ResPartner {
 
     public void setDisplayedName(String displayedName) {
         this.displayedName = displayedName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

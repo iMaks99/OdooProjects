@@ -302,7 +302,7 @@ public class CreateProjectTaskFragment extends Fragment {
     }
 
     private void getPartners(ArrayAdapter<String> stringArrayAdapter, IGetDataService service, SharedPreferences sharedPreferences) {
-        Call<List<ResPartner>> request = service.getPartners(
+        Call<List<ResPartner>> request = service.getUserPartners(
                 sharedPreferences.getString("token", ""),
                 sharedPreferences.getString("db_name", "")
         );

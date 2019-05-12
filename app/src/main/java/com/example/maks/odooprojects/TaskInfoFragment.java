@@ -181,7 +181,7 @@ public class TaskInfoFragment extends Fragment {
                 }
 
                 if (task.getDescription() != null)
-                    taskDescription.setText(HtmlCompat.fromHtml(task.getDescription(), HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    taskDescription.setText(HtmlCompat.fromHtml(task.getDescription(), HtmlCompat.FROM_HTML_MODE_COMPACT));
                 else
                     taskDescription.setVisibility(View.GONE);
 
