@@ -156,8 +156,8 @@ public class EditProjectTaskFragment extends Fragment {
                                 deadlineCalendar.get(Calendar.DAY_OF_MONTH)).show();
                     });
 
-                   // EditText taskDescription = view.findViewById(R.id.new_project_task_description_ev);
-                   // taskDescription.setText(HtmlCompat.fromHtml(mTask.getDescription(), HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    EditText taskDescription = view.findViewById(R.id.new_project_task_description_ev);
+                    taskDescription.setText(HtmlCompat.fromHtml(mTask.getDescription(), HtmlCompat.FROM_HTML_MODE_LEGACY));
 
                     taskStages = view.findViewById(R.id.new_project_task_stage_sp);
                     ArrayAdapter<String> spinnerAdapterStages = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, android.R.id.text1);
@@ -291,20 +291,20 @@ public class EditProjectTaskFragment extends Fragment {
                         }
                     });
 
-                   /* taskCustomerEmail = view.findViewById(R.id.new_project_task_customer_email_ev);
-                    if(mTask.getCustomerEmail() != null)
+                    taskCustomerEmail = view.findViewById(R.id.new_project_task_customer_email_ev);
+                    if (mTask.getCustomerEmail() != null)
                         taskCustomerEmail.setText(mTask.getCustomerEmail());
 
                     taskCustomers = view.findViewById(R.id.new_project_task_customer_name_sp);
                     ArrayAdapter<String> spinnerAdapterCustomer = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, android.R.id.text1);
                     spinnerAdapterCustomer.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     getAllPartners(spinnerAdapterCustomer, service, sharedPreferences);
-*/
+
                     Button taskSave = view.findViewById(R.id.new_project_task_save_btn);
                     taskSave.setOnClickListener(v -> {
                         mTask.setName(taskName.getText().toString());
-                      //  mTask.setCustomerEmail(taskCustomerEmail.getText().toString());
-                      //  mTask.setDescription(HtmlCompat.toHtml(taskDescription.getText(), HtmlCompat.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL));
+                        mTask.setCustomerEmail(taskCustomerEmail.getText().toString());
+                        mTask.setDescription(HtmlCompat.toHtml(taskDescription.getText(), HtmlCompat.TO_HTML_PARAGRAPH_LINES_INDIVIDUAL));
                         editProjectTask(service, sharedPreferences);
                     });
 
@@ -407,7 +407,7 @@ public class EditProjectTaskFragment extends Fragment {
                     builder.show();
                 });
 
-           }
+            }
 
             @Override
             public void onFailure(Call<List<ProjectTaskType>> call, Throwable t) {
@@ -477,7 +477,11 @@ public class EditProjectTaskFragment extends Fragment {
                     mPartnersAll = response.body();
 
                     for (ResPartner partner : mPartnersAll)
-                        stringArrayAdapter.add(partner.getDisplayedName());
+                        if (partner.getDisplayedName() == null)
+                            stringArrayAdapter.add(partner.getName());
+                        else
+                            stringArrayAdapter.add(partner.getDisplayedName());
+
 
                     taskCustomers.setAdapter(stringArrayAdapter);
                     taskCustomers.setSelection(stringArrayAdapter.getPosition(mTask.getCustomerDisplayName()));
@@ -485,7 +489,11 @@ public class EditProjectTaskFragment extends Fragment {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                             ResPartner selectedCustomer = mPartnersAll.stream()
-                                    .filter(c -> c.getDisplayedName().equals(taskCustomers.getItemAtPosition(position).toString()))
+                                    .filter(c -> {
+                                        if (c.getDisplayedName() != null)
+                                            return c.getDisplayedName().equals(taskCustomers.getItemAtPosition(position).toString());
+                                        return c.getName().equals(taskCustomers.getItemAtPosition(position).toString());
+                                    })
                                     .findFirst()
                                     .orElse(null);
 

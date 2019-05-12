@@ -7,7 +7,7 @@ public class ResPartner {
     private int id;
     @SerializedName("name")
     private String name;
-    @SerializedName("displayed_name")
+    @SerializedName("display_name")
     private String displayedName;
     @SerializedName("email")
     private String email;
