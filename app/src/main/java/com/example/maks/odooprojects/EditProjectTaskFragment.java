@@ -535,6 +535,8 @@ public class EditProjectTaskFragment extends Fragment {
                 if (response.isSuccessful()) {
                     Snackbar.make(getActivity().findViewById(R.id.content_frame), "Task successfully edited!", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
+
+                    getFragmentManager().popBackStack();
                 } else
                     Snackbar.make(getActivity().findViewById(R.id.content_frame), "Task does not edited", Snackbar.LENGTH_LONG)
                             .setAction("Action", null).show();
