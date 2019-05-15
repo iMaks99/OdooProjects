@@ -9,8 +9,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.maks.odooprojects.models.ResPartner;
 import com.example.maks.odooprojects.network.IGetDataService;
 import com.example.maks.odooprojects.network.RetrofitClientInstance;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -24,6 +26,8 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+
+import org.w3c.dom.Text;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -39,6 +43,8 @@ public class MainActivity extends AppCompatActivity implements
     NavigationView navigationView;
     Toolbar toolbar;
     Drawable toolbarDrawable;
+    SharedPreferences sharedPreferences;
+    IGetDataService service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +55,10 @@ public class MainActivity extends AppCompatActivity implements
 
     void init() {
 
-        SharedPreferences sharedPreferences = getSharedPreferences("AuthPref", Context.MODE_PRIVATE);
+        sharedPreferences = getSharedPreferences("AuthPref", Context.MODE_PRIVATE);
         String token = sharedPreferences.getString("token", "");
         Boolean isConnected = sharedPreferences.getBoolean("is_db_connected", false);
+        service = RetrofitClientInstance.getRetrofitInstance().create(IGetDataService.class);
 
         if (token.isEmpty()) {
 
@@ -64,8 +71,6 @@ public class MainActivity extends AppCompatActivity implements
             progressDialog = new ProgressDialog(this);
             progressDialog.setMessage("Connecting to server...");
             progressDialog.show();
-
-            IGetDataService service = RetrofitClientInstance.getRetrofitInstance().create(IGetDataService.class);
 
             Call<ResponseBody> result = service.connectToDb(
                     sharedPreferences.getString("db_name", ""),
@@ -125,12 +130,36 @@ public class MainActivity extends AppCompatActivity implements
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        Call<ResPartner> request = service.getUser(
+                sharedPreferences.getString("token", ""),
+                sharedPreferences.getString("db_name", "")
+        );
+
+        request.enqueue(new Callback<ResPartner>() {
+            @Override
+            public void onResponse(Call<ResPartner> call, Response<ResPartner> response) {
+                if (response.isSuccessful()) {
+                    ResPartner user = response.body();
+                    View headerView = navigationView.getHeaderView(0);
+                    TextView userName = headerView.findViewById(R.id.nav_user_name);
+                    userName.setText(user.getName());
+                    TextView userMail = headerView.findViewById(R.id.nav_user_mail);
+                    userMail.setText(user.getEmail());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResPartner> call, Throwable t) {
+
+            }
+        });
+
         showSelectedFragment(new ProjectsRecyclerViewFragment());
     }
 
-    public void crateMenuButton(){
+    public void crateMenuButton() {
         toggle.setDrawerIndicatorEnabled(true);
-        if(toolbarDrawable == null) {
+        if (toolbarDrawable == null) {
             toolbarDrawable = toolbar.getNavigationIcon();
         }
         toolbar.setNavigationIcon(toolbarDrawable);
@@ -173,6 +202,12 @@ public class MainActivity extends AppCompatActivity implements
             case R.id.nav_departments:
                 fragment = new DepartmentsRecyclerViewFragment();
                 break;
+
+            case R.id.nav_logout:
+                sharedPreferences.edit().putString("token", "").apply();
+                Intent intent = new Intent(this, AuthenticationActivity.class);
+                startActivity(intent);
+                finish();
         }
 
         showSelectedFragment(fragment);
@@ -184,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.content_frame, fragment)
+                    .addToBackStack(null)
                     .commit();
         }
 

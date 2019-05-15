@@ -9,6 +9,7 @@ import com.example.maks.odooprojects.models.ProjectTaskTag;
 import com.example.maks.odooprojects.models.ProjectTaskType;
 import com.example.maks.odooprojects.models.ResPartner;
 
+import java.lang.reflect.GenericArrayType;
 import java.util.Calendar;
 import java.util.List;
 
@@ -27,6 +28,12 @@ public interface IGetDataService {
 
     @GET("getprojectsall/")
     Call<List<ProjectProject>> getAllProjects(
+            @Header("Authorization") String token,
+            @Header("dbname") String dbname
+    );
+
+    @GET("getuser/")
+    Call<ResPartner> getUser(
             @Header("Authorization") String token,
             @Header("dbname") String dbname
     );
