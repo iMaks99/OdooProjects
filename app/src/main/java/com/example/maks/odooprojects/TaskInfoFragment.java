@@ -31,8 +31,6 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.snackbar.Snackbar;
 
-import org.w3c.dom.Text;
-
 import java.text.SimpleDateFormat;
 import java.util.List;
 
@@ -245,7 +243,7 @@ public class TaskInfoFragment extends Fragment {
                         dialog.dismiss();
                     });
 
-                    TextView deleteTask = bottomSheetView.findViewById(R.id.project_task_delete_tv);
+                    TextView deleteTask = bottomSheetView.findViewById(R.id.project_bottom_edit_tv);
                     deleteTask.setOnClickListener(d -> {
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         builder.setTitle("Confirmaion")

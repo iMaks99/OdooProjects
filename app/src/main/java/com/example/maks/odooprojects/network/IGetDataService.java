@@ -31,6 +31,34 @@ public interface IGetDataService {
             @Header("dbname") String dbname
     );
 
+    @GET("getprojectbyid/")
+    Call<ProjectProject> getProjectById(
+            @Header("Authorization") String token,
+            @Header("dbname") String dbname,
+            @Query("project_id") int projectId
+    );
+
+    @POST("createproject/")
+    Call<Integer> newProject(
+            @Header("Authorization") String token,
+            @Header("dbname") String dbname,
+            @Body ProjectProject project
+    );
+
+    @GET("editproject/")
+    Call<ResponseBody> deleteProject(
+            @Header("Authorization") String token,
+            @Header("dbname") String dbname,
+            @Query("project_id") int projectId
+    );
+
+    @POST("editproject/")
+    Call<ResponseBody> editProject(
+            @Header("Authorization") String token,
+            @Header("dbname") String dbname,
+            @Body ProjectProject project
+    );
+
     @GET("getusertasks/")
     Call<List<ProjectTask>> getUserTasks(
             @Header("Authorization") String token,

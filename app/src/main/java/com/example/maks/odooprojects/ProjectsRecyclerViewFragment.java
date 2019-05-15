@@ -23,6 +23,7 @@ import android.widget.Toast;
 import com.example.maks.odooprojects.models.ProjectProject;
 import com.example.maks.odooprojects.network.IGetDataService;
 import com.example.maks.odooprojects.network.RetrofitClientInstance;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
@@ -51,6 +52,13 @@ public class ProjectsRecyclerViewFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ((MainActivity) getActivity()).setToolbarTitleEnabled("Projects");
         ((MainActivity) getActivity()).crateMenuButton();
+
+        FloatingActionButton fab = view.findViewById(R.id.add_project_fab);
+        fab.setOnClickListener(v -> getActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.content_frame, new CreateProjectFragment())
+                .addToBackStack(null)
+                .commit());
 
         progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Loading projects...");

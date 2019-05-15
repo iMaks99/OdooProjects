@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,7 +19,6 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +27,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -140,7 +137,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                 dialog.dismiss();
             });
 
-            TextView deleteTask = view.findViewById(R.id.project_task_delete_tv);
+            TextView deleteTask = view.findViewById(R.id.project_bottom_edit_tv);
             deleteTask.setOnClickListener(d -> {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Confirmaion")
@@ -216,24 +213,29 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
             String[] kanbanDialog = new String[2];
             Map<String, String> kanban = new HashMap<>();
 
+            ProjectTaskType taskType = taskTypeList.stream()
+                    .filter(t -> t.getId() == stageId)
+                    .findFirst()
+                    .orElse(null);
+
             switch (projectTask.getKanbanState()) {
                 case "normal":
-                    kanbanDialog[0] = taskTypeList.get(stageId).getLegendDone();
-                    kanbanDialog[1] = taskTypeList.get(stageId).getLegendBlocked();
+                    kanbanDialog[0] = taskType.getLegendDone();
+                    kanbanDialog[1] = taskType.getLegendBlocked();
                     kanban.put(kanbanDialog[0], "done");
                     kanban.put(kanbanDialog[1], "blocked");
                     break;
 
                 case "done":
-                    kanbanDialog[0] = taskTypeList.get(stageId).getLegendNormal();
-                    kanbanDialog[1] = taskTypeList.get(stageId).getLegendBlocked();
+                    kanbanDialog[0] = taskType.getLegendNormal();
+                    kanbanDialog[1] = taskType.getLegendBlocked();
                     kanban.put(kanbanDialog[0], "normal");
                     kanban.put(kanbanDialog[1], "blocked");
                     break;
 
                 case "blocked":
-                    kanbanDialog[0] = taskTypeList.get(stageId).getLegendDone();
-                    kanbanDialog[1] = taskTypeList.get(stageId).getLegendNormal();
+                    kanbanDialog[0] = taskType.getLegendDone();
+                    kanbanDialog[1] = taskType.getLegendNormal();
                     kanban.put(kanbanDialog[0], "done");
                     kanban.put(kanbanDialog[1], "normal");
                     break;
@@ -342,7 +344,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                         .setAction("Action", null).show();
             }
         });
-
     }
 
     void editTaskStage(Call<ResponseBody> request, int position, int which, BottomSheetDialog dialog) {
