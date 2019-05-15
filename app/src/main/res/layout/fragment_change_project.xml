@@ -91,12 +91,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:text="@string/privacy"
-        app:layout_constraintBottom_toBottomOf="@+id/change_project_privacy_rg"
+        app:layout_constraintBottom_toBottomOf="@+id/project_info_privacy_rb"
         app:layout_constraintEnd_toEndOf="@+id/textView7"
         app:layout_constraintStart_toStartOf="parent" />
 
     <RadioGroup
-        android:id="@+id/change_project_privacy_rg"
+        android:id="@+id/project_info_privacy_rb"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -107,21 +107,21 @@
         app:layout_constraintTop_toBottomOf="@+id/change_project_manager_sp">
 
         <RadioButton
-            android:id="@+id/change_project_privacy_invitation_only"
+            android:id="@+id/project_info_privacy_followers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/on_invitation_only" />
 
         <RadioButton
-            android:id="@+id/change_project_privacy_all_employees"
+            android:id="@+id/project_info_privacy_employees"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="@string/visible_by_all_employees" />
 
         <RadioButton
-            android:id="@+id/change_project_privacy_following_customers"
+            android:id="@+id/project_info_privacy_portal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -147,7 +147,7 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/change_project_customer"
-        app:layout_constraintTop_toBottomOf="@+id/change_project_privacy_rg" />
+        app:layout_constraintTop_toBottomOf="@+id/project_info_privacy_rb" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -186,7 +186,7 @@
         </LinearLayout>-->
 
         <LinearLayout
-            android:id="@+id/change_project_tasks_ll"
+            android:id="@+id/project_tasks_count_ll"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -199,7 +199,7 @@
                 android:src="@drawable/ic_round_assignment_24px" />
 
             <TextView
-                android:id="@+id/change_project_tasks_tv"
+                android:id="@+id/project_info_task_count_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"

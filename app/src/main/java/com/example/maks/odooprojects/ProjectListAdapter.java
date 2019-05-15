@@ -114,6 +114,17 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
                 taskColors.addView(colorView);
             }
 
+            TextView infoProjectBtn = view.findViewById(R.id.project_bottom_information_tv);
+            infoProjectBtn.setOnClickListener(i -> {
+                ProjectInfoFragment projectInfoFragment = ProjectInfoFragment.newInstance(project.getId());
+                ((MainActivity) context).getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.content_frame, projectInfoFragment)
+                        .addToBackStack(null)
+                        .commit();
+                dialog.dismiss();
+            });
+
             TextView editProjectBtn = view.findViewById(R.id.project_bottom_edit_tv);
             editProjectBtn.setOnClickListener(b -> {
                 EditProjectFragment editProjectFragment = EditProjectFragment.newInstance(project.getId());

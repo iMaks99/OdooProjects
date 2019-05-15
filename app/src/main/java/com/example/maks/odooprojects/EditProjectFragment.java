@@ -93,7 +93,7 @@ public class EditProjectFragment extends Fragment {
                     EditText projectTasksName = view.findViewById(R.id.change_project_tasks_name_ev);
                     projectTasksName.setText(mProject.getTasksLabel());
 
-                    TextView taskCount = view.findViewById(R.id.change_project_tasks_tv);
+                    TextView taskCount = view.findViewById(R.id.project_info_task_count_tv);
                     taskCount.setText(String.format("%d tasks", mProject.getTasksCount()));
 
                     projectManager = view.findViewById(R.id.change_project_manager_sp);
@@ -142,9 +142,9 @@ public class EditProjectFragment extends Fragment {
                         }
                     });
 
-                    RadioButton projectPrivacyPortal = view.findViewById(R.id.change_project_privacy_following_customers);
-                    RadioButton projectPrivacyFollowers = view.findViewById(R.id.change_project_privacy_invitation_only);
-                    RadioButton projectPrivacyEmployees = view.findViewById(R.id.change_project_privacy_all_employees);
+                    RadioButton projectPrivacyPortal = view.findViewById(R.id.project_info_privacy_portal);
+                    RadioButton projectPrivacyFollowers = view.findViewById(R.id.project_info_privacy_followers);
+                    RadioButton projectPrivacyEmployees = view.findViewById(R.id.project_info_privacy_employees);
 
                     String[] privacyValues = view.getResources().getStringArray(R.array.project_privacy);
 
@@ -169,24 +169,24 @@ public class EditProjectFragment extends Fragment {
 
                     }
 
-                    RadioGroup projectPrivacy = view.findViewById(R.id.change_project_privacy_rg);
+                    RadioGroup projectPrivacy = view.findViewById(R.id.project_info_privacy_rb);
                     projectPrivacy.setOnCheckedChangeListener((group, checkedId) -> {
                         switch (checkedId) {
-                            case R.id.change_project_privacy_invitation_only:
+                            case R.id.project_info_privacy_followers:
                                 projectPrivacyPortal.setChecked(false);
                                 projectPrivacyFollowers.setChecked(true);
                                 projectPrivacyEmployees.setChecked(false);
                                 mProject.setPrivacyVisibility(privacyValues[0]);
                                 break;
 
-                            case R.id.change_project_privacy_all_employees:
+                            case R.id.project_info_privacy_employees:
                                 projectPrivacyPortal.setChecked(false);
                                 projectPrivacyFollowers.setChecked(false);
                                 projectPrivacyEmployees.setChecked(true);
                                 mProject.setPrivacyVisibility(privacyValues[2]);
                                 break;
 
-                            case R.id.change_project_privacy_following_customers:
+                            case R.id.project_info_privacy_portal:
                                 projectPrivacyPortal.setChecked(true);
                                 projectPrivacyFollowers.setChecked(false);
                                 projectPrivacyEmployees.setChecked(false);
