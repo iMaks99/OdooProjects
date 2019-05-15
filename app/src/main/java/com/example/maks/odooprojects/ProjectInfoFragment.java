@@ -7,11 +7,14 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -20,10 +23,12 @@ import android.widget.TextView;
 import com.example.maks.odooprojects.models.ProjectProject;
 import com.example.maks.odooprojects.network.IGetDataService;
 import com.example.maks.odooprojects.network.RetrofitClientInstance;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.w3c.dom.Text;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -59,6 +64,19 @@ public class ProjectInfoFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        ((MainActivity) getActivity()).createBackButton();
+
+        ActionBar mActionBar = ((MainActivity) getActivity()).getSupportActionBar();
+        mActionBar.setDisplayShowTitleEnabled(true);
+        mActionBar.setDisplayShowCustomEnabled(true);
+        LayoutInflater mInflater = LayoutInflater.from(getContext());
+
+        View mCustomView = mInflater.inflate(R.layout.custom_action_bar, null);
+        TextView fragmentTitle = mCustomView.findViewById(R.id.action_bar_title);
+        ImageView openBottomSheet = mCustomView.findViewById(R.id.action_bar_open_bottom_sheet);
+
+        mActionBar.setCustomView(mCustomView);
+
         Bundle args = getArguments();
         int projectId = args.getInt("project_id");
 
@@ -76,9 +94,66 @@ public class ProjectInfoFragment extends Fragment {
                 if (response.isSuccessful()) {
                     mProject = response.body();
 
+                    fragmentTitle.setText(mProject.getName());
+                    openBottomSheet.setOnClickListener(v -> {
+                        View bottomSheetView = getLayoutInflater().inflate(R.layout.fragment_project_info_modal_bottom_sheet, null);
+                        BottomSheetDialog dialog = new BottomSheetDialog(getContext());
+                        dialog.setContentView(bottomSheetView);
+
+                        TextView editProject = bottomSheetView.findViewById(R.id.project_info_bottom_edit_tv);
+                        editProject.setOnClickListener(e -> {
+                            EditProjectFragment editProjectFragment = EditProjectFragment.newInstance(mProject.getId());
+                            ((MainActivity) getContext()).getSupportFragmentManager()
+                                    .beginTransaction()
+                                    .replace(R.id.content_frame, editProjectFragment)
+                                    .addToBackStack(null)
+                                    .commit();
+                            dialog.dismiss();
+                        });
+
+                        TextView deleteProject = bottomSheetView.findViewById(R.id.project_info_bottom_delete_tv);
+                        deleteProject.setOnClickListener(d -> {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                            builder.setTitle("Confirmaion")
+                                    .setMessage("Are you sure you want to delete this record ?")
+                                    .setPositiveButton("Ok", (deleteDialog, id) -> {
+
+                                        Call<ResponseBody> request = service.deleteProject(
+                                                sharedPreferences.getString("token", ""),
+                                                sharedPreferences.getString("db_name", ""),
+                                                projectId
+                                        );
+
+                                        request.enqueue(new Callback<ResponseBody>() {
+                                            @Override
+                                            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                                                dialog.dismiss();
+                                                if (response.isSuccessful()) {
+                                                    Snackbar.make(((MainActivity) getContext()).getCurrentFocus(), "Project successfully deleted!", Snackbar.LENGTH_LONG)
+                                                            .setAction("Action", null).show();
+                                                } else {
+                                                    Snackbar.make(((MainActivity) getContext()).getCurrentFocus(), "Project does not deleted!", Snackbar.LENGTH_LONG)
+                                                            .setAction("Action", null).show();
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                                                dialog.dismiss();
+                                                Snackbar.make(((MainActivity) getContext()).getCurrentFocus(), "Ooops...", Snackbar.LENGTH_LONG)
+                                                        .setAction("Action", null).show();
+                                            }
+                                        });
+                                    })
+                                    .setNegativeButton("Cancel", (deleteDialog, id) -> deleteDialog.cancel());
+                            builder.show();
+                        });
+
+                        dialog.show();
+                    });
+
                     TextView projectName = view.findViewById(R.id.project_info_name_tv);
                     projectName.setText(mProject.getName());
-
                     TextView projectTaskLabel = view.findViewById(R.id.project_info_tasks_label_tv);
                     projectTaskLabel.setText(mProject.getTasksLabel());
 
@@ -125,7 +200,7 @@ public class ProjectInfoFragment extends Fragment {
                     LinearLayout tasksLL = view.findViewById(R.id.project_tasks_count_ll);
                     tasksLL.setOnClickListener(v -> {
                         TasksTabbedFragment tasksTabbedFragment = TasksTabbedFragment
-                                .newInstance(mProject.getId(), mProject.getName());
+                                .newInstance(mProject.getId(), mProject.getName(), mProject.getTasksLabel());
                         ((MainActivity) getContext()).getSupportFragmentManager()
                                 .beginTransaction()
                                 .replace(R.id.content_frame, tasksTabbedFragment, "projectTaskFragment")

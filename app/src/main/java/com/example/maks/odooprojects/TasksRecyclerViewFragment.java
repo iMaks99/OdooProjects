@@ -64,7 +64,6 @@ public class TasksRecyclerViewFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ((MainActivity) getActivity()).setToolbarTitleEnabled("Tasks");
 
         Bundle args = getArguments();
         int stageId = args.getInt("stage_id");

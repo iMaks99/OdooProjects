@@ -11,23 +11,13 @@
         android:layout_width="wrap_content"
         android:layout_height="28dp"
         android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/project_task_info_change_kanban_state_tv"
+        app:layout_constraintBottom_toBottomOf="@+id/project_info_bottom_edit_tv"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/project_task_info_change_kanban_state_tv"
-        app:srcCompat="@drawable/ic_baseline_sentiment_very_satisfied_24px" />
-
-    <ImageView
-        android:id="@+id/imageView6"
-        android:layout_width="wrap_content"
-        android:layout_height="28dp"
-        android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/project_task_info_edit_tv"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/project_task_info_edit_tv"
+        app:layout_constraintTop_toTopOf="@+id/project_info_bottom_edit_tv"
         app:srcCompat="@drawable/ic_baseline_sentiment_very_satisfied_24px" />
 
     <TextView
-        android:id="@+id/project_task_info_share_tv"
+        android:id="@+id/project_info_bottom_share_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -36,64 +26,45 @@
         android:paddingStart="8dp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:text="Share Task"
+        android:text="Share project"
         android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView2"
-        app:layout_constraintTop_toBottomOf="@+id/project_task_info_change_kanban_state_tv" />
-
-    <TextView
-        android:id="@+id/project_task_info_change_kanban_state_tv"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="16dp"
-        android:paddingStart="8dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:text="Change Kanban State"
-        android:textSize="22sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imageView4"
+        app:layout_constraintStart_toEndOf="@+id/imageView5"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/project_task_info_delete_tv"
+        android:id="@+id/project_info_bottom_delete_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:gravity="top"
         android:paddingStart="8dp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:text="Delete Task"
+        android:text="Delete project"
         android:textSize="22sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/imageView3"
-        app:layout_constraintTop_toBottomOf="@+id/project_task_info_edit_tv" />
+        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintTop_toBottomOf="@+id/project_info_bottom_edit_tv" />
 
     <TextView
-        android:id="@+id/project_task_info_edit_tv"
+        android:id="@+id/project_info_bottom_edit_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:paddingStart="8dp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:text="Edit Task"
+        android:text="Edit project"
         android:textSize="22sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/imageView3"
-        app:layout_constraintTop_toBottomOf="@+id/project_task_info_share_tv" />
+        app:layout_constraintTop_toBottomOf="@+id/project_info_bottom_share_tv" />
 
     <ImageView
         android:id="@+id/imageView2"
@@ -101,21 +72,19 @@
         android:layout_height="28dp"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/project_task_info_share_tv"
+        app:layout_constraintBottom_toBottomOf="@+id/project_info_bottom_delete_tv"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/project_info_bottom_share_tv"
+        app:layout_constraintTop_toTopOf="@+id/project_info_bottom_delete_tv"
         app:srcCompat="@drawable/ic_baseline_sentiment_very_satisfied_24px" />
 
     <ImageView
-        android:id="@+id/imageView4"
+        android:id="@+id/imageView5"
         android:layout_width="wrap_content"
         android:layout_height="28dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/project_task_info_delete_tv"
+        app:layout_constraintBottom_toBottomOf="@+id/project_info_bottom_share_tv"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/project_task_info_edit_tv"
+        app:layout_constraintTop_toTopOf="@+id/project_info_bottom_share_tv"
         app:srcCompat="@drawable/ic_baseline_sentiment_very_satisfied_24px" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

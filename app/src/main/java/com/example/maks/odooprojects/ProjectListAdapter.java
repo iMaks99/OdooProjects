@@ -114,7 +114,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
                 taskColors.addView(colorView);
             }
 
-            TextView infoProjectBtn = view.findViewById(R.id.project_bottom_information_tv);
+            TextView infoProjectBtn = view.findViewById(R.id.project_info_bottom_delete_tv);
             infoProjectBtn.setOnClickListener(i -> {
                 ProjectInfoFragment projectInfoFragment = ProjectInfoFragment.newInstance(project.getId());
                 ((MainActivity) context).getSupportFragmentManager()
@@ -125,7 +125,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
                 dialog.dismiss();
             });
 
-            TextView editProjectBtn = view.findViewById(R.id.project_bottom_edit_tv);
+            TextView editProjectBtn = view.findViewById(R.id.project_info_bottom_edit_tv);
             editProjectBtn.setOnClickListener(b -> {
                 EditProjectFragment editProjectFragment = EditProjectFragment.newInstance(project.getId());
                 ((MainActivity) context).getSupportFragmentManager()
@@ -141,7 +141,7 @@ public class ProjectListAdapter extends RecyclerView.Adapter<ProjectListAdapter.
 
         holder.itemView.setOnClickListener(v -> {
             TasksTabbedFragment tasksTabbedFragment = TasksTabbedFragment
-                    .newInstance(project.getId(), project.getName());
+                    .newInstance(project.getId(), project.getName(), project.getTasksLabel());
             ((MainActivity) context).getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.content_frame, tasksTabbedFragment, "projectTaskFragment")

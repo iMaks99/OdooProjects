@@ -69,6 +69,8 @@ public class EditProjectFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ((MainActivity) getActivity()).createBackButton();
+        ((MainActivity) getActivity()).setToolbarTitleEnabled("Edit project");
 
         Bundle args = getArguments();
         int projectId = args.getInt("project_id");

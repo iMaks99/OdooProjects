@@ -59,6 +59,9 @@ public class CreateProjectFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ((MainActivity) getActivity()).createBackButton();
+        ((MainActivity) getActivity()).setToolbarTitleEnabled("Create project");
+
 
         IGetDataService service = RetrofitClientInstance.getRetrofitInstance().create(IGetDataService.class);
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("AuthPref", Context.MODE_PRIVATE);

@@ -48,11 +48,12 @@ public class TasksTabbedFragment extends Fragment
         // Required empty public constructor
     }
 
-    public static TasksTabbedFragment newInstance(int projectId, String projectName) {
+    public static TasksTabbedFragment newInstance(int projectId, String projectName, String tasksLabel) {
         TasksTabbedFragment tasksTabbedFragment = new TasksTabbedFragment();
         Bundle args = new Bundle();
         args.putInt("project_id", projectId);
         args.putString("project_name", projectName);
+        args.putString("tasks_label", tasksLabel);
         tasksTabbedFragment.setArguments(args);
         return tasksTabbedFragment;
     }
@@ -72,6 +73,9 @@ public class TasksTabbedFragment extends Fragment
         ((MainActivity) getActivity()).crateMenuButton();
         projectId = getArguments().getInt("project_id");
         projectName = getArguments().getString("project_name");
+        String tasksLabel = getArguments().getString("tasks_label");
+
+        ((MainActivity) getActivity()).setToolbarTitleEnabled(tasksLabel);
 
         FloatingActionButton fab = view.findViewById(R.id.add_project_task_fab);
         fab.setOnClickListener(v -> {

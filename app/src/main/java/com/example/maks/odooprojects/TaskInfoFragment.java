@@ -79,9 +79,9 @@ public class TaskInfoFragment extends Fragment {
         mActionBar.setDisplayShowCustomEnabled(true);
         LayoutInflater mInflater = LayoutInflater.from(getContext());
 
-        View mCustomView = mInflater.inflate(R.layout.task_info_action_bar, null);
-        TextView fragmentTitle = mCustomView.findViewById(R.id.task_info_title);
-        ImageView openTaskBottomSheet = mCustomView.findViewById(R.id.open_task_bottom_sheet);
+        View mCustomView = mInflater.inflate(R.layout.custom_action_bar, null);
+        TextView fragmentTitle = mCustomView.findViewById(R.id.action_bar_title);
+        ImageView openTaskBottomSheet = mCustomView.findViewById(R.id.action_bar_open_bottom_sheet);
 
         mActionBar.setCustomView(mCustomView);
 
@@ -220,7 +220,7 @@ public class TaskInfoFragment extends Fragment {
                     BottomSheetDialog dialog = new BottomSheetDialog(getContext());
                     dialog.setContentView(bottomSheetView);
 
-                    TextView changeKanbanState = bottomSheetView.findViewById(R.id.project_task_change_kanban_state_tv);
+                    TextView changeKanbanState = bottomSheetView.findViewById(R.id.project_task_info_change_kanban_state_tv);
                     changeKanbanState.setOnClickListener(k -> {
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -232,7 +232,7 @@ public class TaskInfoFragment extends Fragment {
                         builder.show();
                     });
 
-                    TextView editTask = bottomSheetView.findViewById(R.id.projcet_task_edit_tv);
+                    TextView editTask = bottomSheetView.findViewById(R.id.project_task_info_edit_tv);
                     editTask.setOnClickListener(e -> {
                         EditProjectTaskFragment editProjectTaskFragment = EditProjectTaskFragment.newInstance(task.getId());
                         ((MainActivity) getContext()).getSupportFragmentManager()
@@ -243,7 +243,7 @@ public class TaskInfoFragment extends Fragment {
                         dialog.dismiss();
                     });
 
-                    TextView deleteTask = bottomSheetView.findViewById(R.id.project_bottom_edit_tv);
+                    TextView deleteTask = bottomSheetView.findViewById(R.id.project_task_info_delete_tv);
                     deleteTask.setOnClickListener(d -> {
                         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                         builder.setTitle("Confirmaion")

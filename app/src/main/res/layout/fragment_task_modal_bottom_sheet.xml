@@ -11,9 +11,9 @@
         android:layout_width="wrap_content"
         android:layout_height="28dp"
         android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/project_bottom_edit_tv"
+        app:layout_constraintBottom_toBottomOf="@+id/project_task_delete_tv"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/project_bottom_edit_tv"
+        app:layout_constraintTop_toTopOf="@+id/project_task_delete_tv"
         app:srcCompat="@drawable/ic_baseline_sentiment_very_satisfied_24px" />
 
     <ImageView
@@ -58,7 +58,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/project_bottom_edit_tv"
+        android:id="@+id/project_task_delete_tv"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -113,7 +113,7 @@
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/project_bottom_edit_tv">
+        app:layout_constraintTop_toBottomOf="@+id/project_task_delete_tv">
 
         <LinearLayout
             android:id="@+id/task_colors_ll"

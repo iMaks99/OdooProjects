@@ -137,7 +137,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.ViewHo
                 dialog.dismiss();
             });
 
-            TextView deleteTask = view.findViewById(R.id.project_bottom_edit_tv);
+            TextView deleteTask = view.findViewById(R.id.project_task_delete_tv);
             deleteTask.setOnClickListener(d -> {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Confirmaion")

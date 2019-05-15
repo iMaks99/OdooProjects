@@ -196,9 +196,4 @@ public class MainActivity extends AppCompatActivity implements
         getSupportActionBar().setDisplayShowTitleEnabled(true);
         getSupportActionBar().setTitle(title);
     }
-
-    public void setCustomToolbarEnabled() {
-        getSupportActionBar().setDisplayShowCustomEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-    }
 }
